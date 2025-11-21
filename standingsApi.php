@@ -78,6 +78,4 @@ function updateStandings($leagueCode, $leagueId) {
             ':goal_diff'     => $team['goalDifference']
         ]);
     }
-
-    return "Standings successfully updated!";
 }

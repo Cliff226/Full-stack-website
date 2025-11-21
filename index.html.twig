@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <header class = "header">
+        <nav> 
+            {{ include('navigation.html.twig') }}     
+        </nav>
+    </header>
+    <main>
+        <div id="Welcome-section" class="welcome-section">
+            <img src="public/images/San-siro.jpg" alt="Stadium Image" class="stadium-image">
+            <div class="banner">
+                <h1>Welcome to GoalRush</h1>
+                <p>Your ultimate destination for live football scores, news, and updates from leagues around the world.</p>
+            </div>
+        </div>
+        <div>
+            <div class="row g-0">
+                <div class="col sml-6">
+                    <img class="side-image" src="public/images/stadium.jpg" alt="GoalRush Logo" style="max-width: 100%; height: auto;">
+                </div>
+                <div id = "intro" class="col sml-6">
+                    <div class="intro-textTitle">
+                        <h2>Get Started</h2>
+                    </div>
+                    <div class="intro-text">
+                        <p>Log in or register to personalise your experience,
+                         follow your favorite leagues, and teams. Enjoy real-time 
+                         updates and exclusive content tailored just for you!
+                        </p>
+                    </div>                
+                </div>
+            </div>
+        </div>
+    <footer class = "footer">
+        <p>Copyright © 2025</p>
+    </footer>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <?php
 // PDO database connection
 $host = "localhost";
-$db   = "league_standings"; // your DB name
+$db   = "league_standings"; 
 $user = "root";
 $pass = "";
 

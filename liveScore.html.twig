@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <header class = "header">
+        <nav> 
+            {{ include('navigation.html.twig') }}     
+        </nav>
+    </header>
+    <main class = "main">
+        <section id="LiveScores">
+            <h2>Live Scores</h2>
+        </section>
+        <section id="welcome-message">
+            {# <?php
+            if (isset($_SESSION['user'])) {
+                 echo "<h3> Scores form your Favorite League: " . htmlspecialchars($_COOKIE['favorite_league']) . "</h3>";
+                 // Display favorite league from cookie
+
+            } else {
+                echo "<h3>Welcome Please log in or register for more news.</h3>";  // if not logged in
+            }
+            ?> #}
+        </section>
+        <div id = "livescoreButtons" class="contaner" mt-5>
+            <div class="row mb-3"> 
+                <div class="col sml-3">
+                    <form class="livescoreForm" 'refreshButton' method="post">
+                        <button id= 'refresh' type="submit" name="refresh">Refresh Live Scores</button>
+                    </form>
+                </div> 
+                <div class="col sml-9">
+                    <form class="livescoreForm" method="get">
+                        <select name="league" onchange="this.form.submit()">
+                            <option value="">All Leagues</option>
+
+                            {% for league in leagues %}
+                                <option value="{{ league }}" 
+                                    <option value="{{ league }}" {% if league == selectedLeague %}selected{% endif %}>{{ league }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class = "main">
+        <div id="LiveScoresMatches"> 
+            {% for country, comps in groupedMatches %}
+            {# country is the key comps is the value (associative array) example 'England' => [
+            'Premier League' => [ match1, match2, ... ],#} 
+                <div id="country-section">
+                <h2 class="mt-4">{{ country }}</h2>
+
+                {% for comp, matches in comps %}
+                    <h4 class="mt-3">{{ comp }}</h4>
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Home</th>
+                                <th>Away</th>
+                                <th>Score</th>
+                                <th>Minute</th>
+                                <th>Kickoff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in matches %}
+                                <tr>
+                                    <td>{{ m.homeTeam.name }}</td>
+                                    <td>{{ m.awayTeam.name }}</td>
+                                    <td>{{ m.score.fullTime.home }} - {{ m.score.fullTime.away }}</td>
+                                    <td>{{ m.minute }}</td>
+                                    <td>{{ m.utcDate|date("H:i") }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table><br>
+
+                {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+                        
+  
+        <!-- Auto-refresh every 30 seconds -->
+        <!-- <script>
+        setTimeout(() => { location.reload(); }, 30000);
+        </script>        -->
+
+        </section>  
+
+        </section>
+
+            
+    </main>
+    <footer class = "footer">
+        <p>Copyright © 2025</p>
+    </footer>
+</body>
+</html>

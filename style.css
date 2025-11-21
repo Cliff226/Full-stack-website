@@ -1,0 +1,409 @@
+
+ body{
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: rgb(15, 15, 15);
+  background-image: url(css-background/background2.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  display: grid;
+} 
+
+
+
+/* welcome div */
+.welcome-section {
+  position: relative;      
+  width: 100%;      
+  overflow: hidden;
+}
+
+.stadium-image {
+  margin-top: 90px;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;  
+  filter: brightness(.6);  
+}
+
+.banner {
+  position: absolute;
+  width: 110%;
+  top: 60%;               
+  left: 50%;                 
+  transform: translate(-50%, -50%); 
+  text-align: center;
+  text-size-adjust: auto;
+  color: rgb(0, 0, 0);
+  padding: 20px 40px;
+  background-color: #588b8b;
+}
+.side-image{
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;  
+  filter: brightness(.6);  
+}
+#intro {
+  color: rgb(0, 0, 0);
+  font-size: 100%;
+  background-color: #588b8b;            
+  display: flex;
+  flex-direction: column;        
+  justify-content: space-between;
+  text-justify: justify;  
+  padding: 1%;
+  text-decoration:bold;           
+}
+@media (min-width: 768px) {
+  #intro {
+  font-size: x-large;
+  color: rgb(0, 0, 0);
+  background-color: #588b8b;            
+  display: flex;
+  flex-direction: column;        
+  justify-content: space-between;
+  text-justify: justify;  
+  padding: 5%;
+  text-decoration:bold; 
+  text-shadow:#222         
+} 
+  
+}
+#searchInput{
+  margin: 0 0 -15px 0;
+}
+
+
+/* Table styling */
+#Trophies.table
+ {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 15px ;
+}
+
+#Trophies th,  
+#Trophies td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  font-weight: bold;
+  text-shadow:
+    -1px -1px 0 black,
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black;
+} 
+
+th {
+   background: #333333; 
+   font-size: medium;
+  }
+td { 
+  font-size: 14px; 
+}
+tr:hover { 
+  background: rgba(7, 4, 4, 0.15);
+  cursor: default;
+}
+
+
+
+img.websitelogo { 
+  width: 200px
+
+}
+.buttonIcon img {
+  width: 5%; 
+}
+.buttonIcon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  font-size: 14px;
+  text-decoration: none;
+  background-color: #c8553d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* navigation */
+.custom-navbar {
+  background-color: #588b8b !important;
+      flex-wrap:nowrap !important;
+
+}
+
+.custom-navbar .offcanvas, 
+.custom-navbar .offcanvas-header {
+  background-color: #588b8b !important;
+}
+
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand,
+.custom-navbar .offcanvas-title {
+  color: white !important;
+}
+.navbar-nav .dropdown-menu {
+  background-color: #c8553d;
+
+}
+
+/* Forms */
+form {
+  background: transparent;
+  padding: 25px;
+  border-radius: 5px;
+}
+form.inline-form {
+    padding: 10px;
+    padding-left: 0px;
+  
+}
+form.leagueSelect {
+  max-width: 100%;
+  margin-top: 15%;
+  padding-bottom: 0;
+  box-shadow: none;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+
+}
+form.select_teams {
+  background-color: rgba(151, 126, 126, 0.1);
+  max-width: 90%;
+}
+
+/* Inputs and selects (keeps compatibility with original selector) */
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form input[type="date"],
+form select,
+form select[type="league"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+/* Submit inputs */
+form input[type="submit"] {
+  width: 100%;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 16px;
+}
+form input[type="submit"]:hover { background: #555; }
+form input[type="submit"]:active { background: rgb(177, 81, 81); }
+
+/* Labels & headings */
+label { 
+  font-weight: bold; 
+  display: block;
+   margin-top: 10px; 
+  }
+
+/* liveScore page */
+#livescoreButtons {
+  background-color: rgba(151, 126, 126, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 15%;
+}
+
+/* Buttons */
+button {
+  display: inline-block;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 16px;
+}
+button:hover { 
+
+  color: rgb(0, 0, 0); 
+}
+button:active { 
+  background: rgb(173, 87, 7); 
+}
+
+button.teamSelection { width: 100%; font-size: unset; }
+
+.leagueSelect button.active {
+  background-color: rgb(173, 87, 7);
+  color: rgb(0, 0, 0);
+  border-color: #fcfdfd;
+}
+form.leagueSelect,
+form.clubSelect {
+  padding: 0 5% 0 5%;
+}
+
+#country-section{
+  background-color: #588b8b98;
+  color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-size-adjust: 15px;
+}
+.livescoreForm {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.livescoreForm button,
+.livescoreForm select {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  min-width: 250px;
+}
+/* palmares title */
+.club-card {
+  display: flex;
+  border: solid;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  color: #fff;
+  align-items: center;
+  gap: 20px;
+  transition: transform 0.2s ease-in-out;
+}
+img.websitelogo { width: 30%; border-radius: 10px; }
+.club-logo, .logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
+  padding: 5px;
+}
+.clubName-text-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+#registrationContainer{
+  margin-top: 15% !important;
+ 
+}
+#standingsContainer{
+  background-color: #588b8b98;
+  margin-top: 15% !important;
+}
+
+#leagueCrest{
+ width:50px;
+}
+#standingsContainer{
+  padding: 20px;
+  font-size: small;
+}
+
+@media (max-width: 767px) {
+    #standingsContainer td,th {
+      font-size: small !important;
+      align-items: center;
+      padding: 5px !important;
+    }
+}
+
+
+
+ @media (min-width: 768px) {
+    #registrationForm{
+    border-radius: 15px 0 0 15px !important;
+    }
+    .WelcomeContainer
+  {
+    border-radius: 0 15px 15px 0 !important;
+  }
+}
+#registrationForm{
+  background-color: #588b8b98;
+  padding : 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0 0 15px 15px;
+}
+#signinform
+{
+  margin-bottom: 50px !important;
+}
+
+.WelcomeContainer
+{
+  font-size: x-large;
+  color: rgb(0, 0, 0);
+  background-color: #588b8b;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-justify: justify;
+  padding: 10%;
+  text-decoration: bold;
+  height: 100%;
+  border-radius: 15px 15px 0 0;
+}
+.loginButtons{
+   background-color: #c8553d; 
+    color: white;   
+    border: 1px solid white;  
+    border-radius: 30px; 
+    padding: 10px 20px;  
+    cursor: pointer;  
+    font-size: medium !important;    
+    width: inherit; 
+}
+
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  background: #222;
+  color: #fff;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+/* Responsive Design for club and league selection*/
+/* Sidebar styling */
+.sidebar {
+    background: #222;
+    color: white;
+    padding: 10px;
+}

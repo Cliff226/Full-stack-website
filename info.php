@@ -5,7 +5,7 @@ $apiKey = "0c98b44563234432be112138964c7529";
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-    CURLOPT_URL => "https://api.football-data.org/v4/competitions/PD/standings",
+    CURLOPT_URL => "http://api.football-data.org/v4/teams/98/matches",
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_SSL_VERIFYHOST => 0,  // temporary
     CURLOPT_SSL_VERIFYPEER => 0,   // temporary

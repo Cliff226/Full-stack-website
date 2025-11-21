@@ -1,0 +1,59 @@
+
+{# Success Modal #}
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-success text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {% if context == 'login' %}
+            Login Successful
+          {% else %}
+            Registration Successful
+          {% endif %}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% if context == 'login' %}
+          
+          Welcome back {{username}}!
+        {% else %}
+          Welcome! Your account has been created.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Error Modal #}
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-danger text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {% if context == 'login' %}
+            Login Failed
+          {% else %}
+            Registration Failed
+          {% endif %}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% if errors %}
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% if context == 'login' %}
+              Please check your email or password and try again.
+            {% else %}
+              Please check your inputs and try again.
+            {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

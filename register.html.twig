@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush - Register</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <nav>
+        {{ include('navigation.html.twig') }}
+    </nav>
+</header>
+<!-- Registraion -->
+<div class="container mt-5" id="registrationContainer">
+    <form class="signinform" method="POST">
+        <div class="row g-0">
+            <!-- Registration div on left and on bottom in mobile -->
+            <div class="col-md-6 order-md-1 order-2" id="registrationForm">
+                <h1>Register</h1>
+                <input type="text" id="firstName" name="name" class="form-control mb-3" placeholder="First name" required>
+                <input type="text" id="lastName" name="surname" class="form-control mb-3" placeholder="Last name" required>
+                <input type="email" id="email" name="email" class="form-control mb-3" placeholder="Email @example.com" required>
+                <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control mb-3" required max="<?= date('Y-m-d', strtotime('-10 year')); ?>">
+                <select class="form-select mb-3" name="league" required>
+                    <option selected disabled value="">Choose your league...</option>
+                    <option value="English Premier League">English Premier League</option>
+                    <option value="LaLiga Spain">LaLiga Spain</option>
+                    <option value="Serie A Italy">Serie A Italy</option>
+                    <option value="Bundesliga Germany">Bundesliga Germany</option>
+                    <option value="Ligue 1 France">Ligue 1 France</option>
+                </select>
+                <input type="password" id="inputPassword" class="form-control register-password mb-2" name="passwordLogin" placeholder="Password" required>
+                <input type="password" id="inputConfirmPassword" class="form-control register-password mb-2" name="confirm_password" placeholder="Confirm Password" required>
+                <!-- Show and hide password button -->
+                <button type="button" class="loginButtons mb-3" id="toggleAllPasswords">Show Password</button>
+                <!-- Submit button -->
+                <button type="submit" class="loginButtons mb-3">Register</button>
+            </div>
+            <!-- Welcome column on the right and on top in mobile -->
+            <div class="col-md-6 order-md-2 order-1">
+                <div class="WelcomeContainer p-3">
+                    <h1>Welcome!</h1>
+                    <p>Enter your personal details to create an account below</p>
+                    <p>OR</p>
+                    <p>Press Login to access your account</p>
+                    <a href="login.php">
+                        <button class="loginButtons mt-2" type="button">Login</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% include 'modal.html.twig' %}
+
+<!-- Scripts -->
+<script> const register = '{{ status|default('')|e('js') }}'; </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="public/js/modal.js"></script>
+<script src="public/js/register.js"></script>
+
+</body>
+</html>
