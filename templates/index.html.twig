@@ -20,28 +20,68 @@
             <div class="banner">
                 <h1>Welcome to GoalRush</h1>
                 <p>Your ultimate destination for live football scores, news, and updates from leagues around the world.</p>
+                <a id="scrolldownlink" scrolldown href="#features-section">Explore</a>
             </div>
         </div>
         <div>
             <div class="row g-0">
                 <div class="col sml-6">
-                    <img class="side-image" src="public/images/stadium.jpg" alt="GoalRush Logo" style="max-width: 100%; height: auto;">
+                    <img class="side-image" src="public/images/stadium.jpg" alt="background image of a football stadium">
                 </div>
                 <div id = "intro" class="col sml-6">
                     <div class="intro-textTitle">
                         <h2>Get Started</h2>
                     </div>
                     <div class="intro-text">
-                        <p>Log in or register to personalize your experience,
-                         follow your favorite leagues, and teams. Enjoy real-time 
-                         updates and exclusive content tailored just for you!
+                        <p>login or register to personalize your experience,
+                         follow your favorite teams, and stay updated with the 
+                         latest football action
                         </p>
                     </div>                
                 </div>
             </div>
         </div>
+        <div class="row g-0" id="features-section">
+            <div class="col sml-2">
+                <div class="feature-icon">
+                    <div class="link-section">
+                        <a class ="link-section" href="/liveScore.php">
+                            <img class="link-section" src="public/images/kick.jpg" alt="GoalRush Logo">
+                            <h3>Live Scores</h3>
+                            <p>Stay updated with real-time scores.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col sml-2">
+                <div class="feature-icon">
+                    <div class="link-section">
+                        <a class ="link-section" href="/blog.php">
+                            <img class="link-section" src="public/images/championsball.jpg" alt="ball image">
+                            <h3>Blog</h3>
+                            <p>Read in-depth articles and match analyses.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col sml-2">
+                <div class="feature-icon">
+                    <div class="link-section">
+                        <a class ="link-section" href="/News.php">
+                            <img class="link-section" src="public/images/net.jpg" alt="net image">
+                            <h3>News</h3>
+                            <p>Get the latest football news and updates.</p>
+                       </a>
+                    </div>
+                </div>
+            </div>                              
+        </div>
+    </main>
     <footer class = "footer">
         <p>Copyright © 2025</p>
     </footer>
+        {% include 'searchModal.html.twig' %}
+        <script> const TEAM_NOT_FOUND = {{ teamNotfound ? 'true' : 'false' }}; </script>
+        <script src="public/js/teamSearchModal.js"></script>
 </body>
 </html>

@@ -1,80 +1,86 @@
 <?php
 session_start();
 require_once 'vendor/autoload.php';
-
-require_once 'standingsDatabaseConnection.php'; // DB with Standings
+require_once 'standingsDatabaseConnection.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
+$matchesData = [];
+$groupedMatches = [];
 
-// Check if search form submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
 
     $clubName = trim($_POST['clubNameSearch']);
 
-    // Get team ID from Standings table
+    // Fetch the team ID
     $stmt = $pdo->prepare("SELECT team_id FROM standings WHERE team_name = :club LIMIT 1");
     $stmt->execute(['club' => $clubName]);
     $team = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$team) {
-        header( "Location: index.php");
-        exit;   
+        header("Location: index.php");
+        $_SESSION['teamNotfound'] = true;
+        exit;
     }
 
     $teamId = $team['team_id'];
 
-    // Check team_matches table for existing data
+    // Load existing matches
     $stmt = $pdo->prepare("SELECT * FROM team_matches WHERE team_id = :team_id ORDER BY kickoff ASC");
     $stmt->execute(['team_id' => $teamId]);
     $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $needsUpdate = true; // Default: fetch from API
+    $needsUpdate = true;
+
     if (!empty($matchesData)) {
-        // Check last_updated
         $stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM team_matches WHERE team_id = :team_id");
         $stmt->execute(['team_id' => $teamId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $lastUpdate = $row['last_update'] ?? null;
 
-        if ($lastUpdate) {
-            $lastDate = new DateTime($lastUpdate);
+        if ($row['last_update']) {
+            $lastDate = new DateTime($row['last_update']);
             $today = new DateTime();
-            $diff = $today->diff($lastDate)->days;
-
-            if ($diff < 1) {
-                $needsUpdate = false; // Data is fresh
+            if ($today->diff($lastDate)->days < 1) {
+                $needsUpdate = false; 
             }
         }
     }
 
-    // If data absent or stale, call API
+    // API refresh if needed
     if ($needsUpdate) {
-        // Make sure $teamId is available in liveScoreAPI.php
         include 'TeamMatchesAPI.php';
 
-        // Reload the matches from DB after API update
         $stmt = $pdo->prepare("SELECT * FROM team_matches WHERE team_id = :team_id ORDER BY kickoff ASC");
         $stmt->execute(['team_id' => $teamId]);
         $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    }
     }
 
-    $groupedMatches = [];
-        foreach ($matchesData as $row) {
-        $country = e($row['country']);
-        $competition = e($row['competition']);
+    // Build grouped array
+    foreach ($matchesData as $row) {
 
-        if (!isset($groupedMatches[$competition])) $groupedMatches[$competition] = [];
+        $competition = $row['competition'];
+        $country = $row['country'];
+
+        if (!isset($groupedMatches[$country])) {
+            $groupedMatches[$country] = [];
+        }
+        if (!isset($groupedMatches[$country][$competition])) {
+            $groupedMatches[$country][$competition] = [];
+        }
 
         $groupedMatches[$country][$competition][] = [
-            'id' => e($row['match_id']),
+            'id' => $row['match_id'],
             'competition' => ['name' => $competition],
             'area' => ['name' => $country],
-            'homeTeam' => ['name' => e($row['home_team'])],
-            'awayTeam' => ['name' => e($row['away_team'])],
+            'homeTeam' => [
+                'name' => $row['home_team']
+            ],
+            'homeTeamCrest' => $row['home_team_crest'],
+            'awayTeam' => [
+                'name' => $row['away_team']
+            ],
+            'awayTeamCrest' => $row['away_team_crest'],
             'score' => [
                 'fullTime' => [
                     'home' => (int)$row['home_score'],
@@ -82,13 +88,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
                 ]
             ],
             'minute' => htmlspecialchars_decode($row['minute']),
-            'utcDate' => e($row['kickoff'])
+            'utcDate' => $row['kickoff']
         ];
+    }
+
 }
 
-// Render Twig template
-    echo $twig->render('teamSearch.html.twig', [
-        'groupedMatches' => $groupedMatches,
-        'user' => $_SESSION['user'] ?? null,
-        'current_page' => 'LiveScore'
+// Render page
+echo $twig->render('teamSearch.html.twig', [
+    'groupedMatches' => $groupedMatches,
+    'user' => $_SESSION['user'] ?? null,
+    'current_page' => 'LiveScore',
+    'teamNotfound' => $teamNotfound
 ]);

@@ -2,7 +2,7 @@
  body{
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  color: black;
+  color: rgb(15, 15, 15);
   background-image: url(css-background/background2.jpg);
   background-size: cover;
   background-attachment: fixed;
@@ -30,7 +30,7 @@
 .banner {
   position: absolute;
   width: 110%;
-  top: 60%;               
+  top: 45%;               
   left: 50%;                 
   transform: translate(-50%, -50%); 
   text-align: center;
@@ -66,11 +66,14 @@
   flex-direction: column;        
   justify-content: space-between;
   text-justify: justify;  
-  padding: 10%;
+  padding: 5%;
   text-decoration:bold; 
   text-shadow:#222         
 } 
   
+}
+#searchInput{
+  margin: 0 0 -15px 0;
 }
 
 
@@ -103,6 +106,7 @@
 
 th {
    background: #333333; 
+   font-size: medium;
   }
 td { 
   font-size: 14px; 
@@ -111,13 +115,24 @@ tr:hover {
   background: rgba(7, 4, 4, 0.15);
   cursor: default;
 }
-
-
-
-img.websitelogo { 
-  width: 200px
-
+#searchform{
+  width: auto;
+  padding: 0%;
 }
+
+#searchButton{
+  background-color: #c8553d; 
+    color: white;   
+    border: 1px solid white;  
+    border-radius: 15px; 
+    padding: 10px 20px;  
+    cursor: pointer;  
+    font-size: medium !important; 
+    width: inherit;   
+    }
+
+
+
 .buttonIcon img {
   width: 5%; 
 }
@@ -133,6 +148,22 @@ img.websitelogo {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+#scrolldownlink {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 20px;
+  border: 2px solid white;
+  background-color: #c8553d;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+}
+
+#scrolldownlink:hover {
+  background-color: #a6442a;
+  color: burlywood;
+  border: 2px solid burlywood;
 }
 
 /* navigation */
@@ -155,6 +186,39 @@ img.websitelogo {
 .navbar-nav .dropdown-menu {
   background-color: #c8553d;
 
+}
+.side-image{
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;  
+  filter: brightness(.6);  
+}
+.feature-icon{
+  height: auto;
+  display: block;
+  object-fit: cover;  
+  filter: brightness(.6);  
+}
+.link-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4%;
+  text-decoration: none;
+  color: white;
+  background-color: #588b8b;
+}
+.link-section img {
+  width: 95%;
+  height: auto;
+  display: block;
+  object-fit: cover;  
+}
+
+#features-section {
+  margin-bottom: 50px;
+  background-color: #333333;
 }
 
 /* Forms */
@@ -224,7 +288,7 @@ label {
   background-color: rgba(151, 126, 126, 0.1);
   padding: 20px;
   border-radius: 10px;
-  margin-top: 15%;
+  margin-top: 5%;
 }
 
 /* Buttons */
@@ -294,7 +358,11 @@ form.clubSelect {
   gap: 20px;
   transition: transform 0.2s ease-in-out;
 }
-img.websitelogo { width: 30%; border-radius: 10px; }
+img.websitelogo { 
+  width: 15%; 
+  border-radius: 10px; 
+}
+
 .club-logo, .logo {
   width: 80px;
   height: 80px;
@@ -312,12 +380,12 @@ img.websitelogo { width: 30%; border-radius: 10px; }
   font-weight: bold;
 }
 #registrationContainer{
-  margin-top: 15% !important;
+  margin-top: 10% !important;
  
 }
 #standingsContainer{
   background-color: #588b8b98;
-  margin-top: 15% !important;
+  margin-top: 10% !important;
 }
 
 #leagueCrest{
@@ -334,6 +402,12 @@ img.websitelogo { width: 30%; border-radius: 10px; }
       align-items: center;
       padding: 5px !important;
     }
+
+      .link-section p,h3 {
+      font-size: x-small !important;
+    }
+    
+
 }
 
 
@@ -346,6 +420,7 @@ img.websitelogo { width: 30%; border-radius: 10px; }
   {
     border-radius: 0 15px 15px 0 !important;
   }
+
 }
 #registrationForm{
   background-color: #588b8b98;

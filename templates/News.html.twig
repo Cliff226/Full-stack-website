@@ -15,11 +15,17 @@
         </nav>
     </header>
     <main>
-        <h2>News</h2>
-        <section id="News">
-
-
-        
+        <h2>Blog</h2>
+        <section id="blog-articles">
+            {% for article in articles %}
+                <article class="blog-article">
+                    <h3>{{ article.title }}</h3>
+                    <p class="blog-date">{{ article.date|date("F j, Y") }}</p>
+                    <p class="blog-content">{{ article.content }}</p>
+                </article>
+            {% else %}
+                <p>No articles found.</p>
+            {% endfor %}
         </section>
     </main>
     <footer class = "footer">

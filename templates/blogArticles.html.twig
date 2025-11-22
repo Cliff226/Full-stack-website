@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <header class = "header">
+        <nav> 
+            {{ include('navigation.html.twig') }}     
+        </nav>
+    </header>
+    <main>
+        <h2>Blog</h2>
+        <section id="blog-articles">
+            {% for article in articles %}
+                <article class="blog-article">
+                    <h3>{{ article.title }}</h3>
+                    <p class="blog-date">{{ article.date|date("F j, Y") }}</p>
+                    <p class="blog-content">{{ article.content }}</p>
+                </article>
+            {% else %}
+                <p>No articles found.</p>
+            {% endfor %}
+        </section>                 
+    </main>
+    <footer class = "footer">
+        <p>Copyright © 2025</p>
+    </footer>
+</body>
+</html>

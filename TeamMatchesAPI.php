@@ -39,14 +39,22 @@ if (empty($matches)) return;
 // Prepare SQL
 $sql = "
 INSERT INTO team_matches
-(match_id, team_id, competition, country, home_team, away_team, home_score, away_score, minute, kickoff, last_updated)
-VALUES (:match_id, :team_id, :competition, :country, :home_team, :away_team, :home_score, :away_score, :minute, :kickoff, NOW())
+(match_id, team_id, competition, country, home_team, home_team_crest,
+ away_team, away_team_crest, home_score, away_score, minute, kickoff, last_updated)
+VALUES (:match_id, :team_id, :competition, :country, :home_team, :home_team_crest,
+        :away_team, :away_team_crest, :home_score, :away_score, :minute, :kickoff, NOW())
 ON DUPLICATE KEY UPDATE
-    home_score = VALUES(home_score),
-    away_score = VALUES(away_score),
-    minute = VALUES(minute),
-    kickoff = VALUES(kickoff),
-    last_updated = NOW()
+    competition       = VALUES(competition),
+    country           = VALUES(country),
+    home_team         = VALUES(home_team),
+    home_team_crest   = VALUES(home_team_crest),
+    away_team         = VALUES(away_team),
+    away_team_crest   = VALUES(away_team_crest),
+    home_score        = VALUES(home_score),
+    away_score        = VALUES(away_score),
+    minute            = VALUES(minute),
+    kickoff           = VALUES(kickoff),
+    last_updated      = NOW()
 ";
 
 $stmt = $pdo->prepare($sql);
@@ -56,6 +64,8 @@ foreach ($matches as $match) {
     $competition = $match['competition']['name'] ?? '';
     $country = $match['area']['name'] ?? '';
     $home = $match['homeTeam']['name'] ?? '';
+    $homeCrest = $match['homeTeam']['crest'] ?? '';
+    $awayCrest = $match['awayTeam']['crest'] ?? '';
     $away = $match['awayTeam']['name'] ?? '';
     $homeScore = (int)($match['score']['fullTime']['home'] ?? 0);
     $awayScore = (int)($match['score']['fullTime']['away'] ?? 0);
@@ -79,7 +89,9 @@ foreach ($matches as $match) {
         ':team_id' => $teamId,
         ':competition' => $competition,
         ':country' => $country,
+        ':home_team_crest'=> $homeCrest,
         ':home_team' => $home,
+        ':away_team_crest'=> $awayCrest,
         ':away_team' => $away,
         ':home_score' => $homeScore,
         ':away_score' => $awayScore,

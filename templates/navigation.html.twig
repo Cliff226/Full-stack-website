@@ -20,9 +20,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="LiveScore.php">LiveScore</a>
                     </li>
+                     {% if user %}
+                     <li class="nav-item">
+                        <a class="nav-link" href="blog.php">Blog</a>
+                    </li>
+                    {% endif %}
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Leagues
+                        Leagues Standings
                         </a>
                         <ul class="dropdown-menu dropdown-menu-light">
                             <li><a class="dropdown-item" href="standings.php?league=PL">Premier League</a></li>
@@ -35,11 +41,18 @@
                 </ul>
                     </li>
                 </ul>
-                    {# <form class="d-flex mt-3" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-                        <button class="btn btn-success" type="submit">Search</button>
-                    </form> #}
+                    <form id= "searchform" class="d-flex mt-3" role="search" method="POST" action= "teamMatches.php">
+                        <div class="relative w-full" id="searchContaner">
+                        <input type="text" id="searchInput" class="p-2 border rounded w-full"
+                            placeholder="Search clubs..." onkeyup="showHint(this.value)" autocomplete="off" name="clubNameSearch">
+                        <div id="txtHint" class="absolute left-0 right-0 bg-white border rounded mt-1 hidden z-50"></div>
+                        </div>
+                       <div class="ms-2">
+                        <button id="searchButton" class="btn btn-success" type="submit">Search</button>
+                        </div>
+                    </form>
                     {{ include('loginButtons.html.twig') }}
+                    <script src="public/js/search.js"></script>
             </div>
         </div>
     </div>

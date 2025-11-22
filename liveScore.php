@@ -66,8 +66,8 @@ foreach ($matchesData as $row) {
         'id' => e($row['match_id']),
         'competition' => ['name' => $competition],
         'area' => ['name' => $country],
-        'homeTeam' => ['name' => e($row['home_team'])],
-        'awayTeam' => ['name' => e($row['away_team'])],
+        'homeTeam' => ['name' => htmlspecialchars_decode (e($row['home_team']))],
+        'awayTeam' => ['name' => htmlspecialchars_decode(e($row['away_team']))],
         'score' => [
             'fullTime' => [
                 'home' => (int)$row['home_score'],

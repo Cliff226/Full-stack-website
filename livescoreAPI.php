@@ -4,10 +4,8 @@ require_once 'almanacDatabaseConnection.php';
 $apiToken = '0c98b44563234432be112138964c7529';
 
 $competitions = 'PL,PD,SA,BL1,FL1,CL,EL,ECL,WC,QCCF,QUFA,ESC'; 
-$status = 'LIVE'; 
-$date = date('Y-m-d'); 
 
-$url = "https://api.football-data.org/v4/matches?competitions=$competitions&status=$status&dateFrom=$date&dateTo=$date";
+$url = "https://api.football-data.org/v4/matches?competitions=$competitions";
 
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -22,10 +20,6 @@ $response = curl_exec($curl);
 $err = curl_error($curl);
 curl_close($curl);
 
-if ($err) {
-    echo "<p>Error fetching live matches: $err</p>";
-    return;
-}
 
 $data = json_decode($response, true);
 $matches = $data['matches'] ?? [];
