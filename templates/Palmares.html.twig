@@ -15,91 +15,92 @@
             {{ include('navigation.html.twig') }}
         </nav>
     </header>
-
+    <main>
     <!-- League selection dropdown -->
-    <div class="row g-0 mb-3">
-        <div class="col-12">
-            <form class="leagueSelect" action="" method="get">
-                <select name="League_select" class="form-select" onchange="this.form.submit()">
-                    <option value="">Select League</option>
-                    {% for key, val in stored_leagues %}
-                        <option value="{{ key }}" {% if league_select == key %}selected{% endif %}>
-                            {{ league_names[key] }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
-    </div>
-
-    <!-- Club selection dropdown -->
-    <div class="row g-0 mb-3">
-        <div class="col-12">
-            {% if clubs_list %}
-                <form class="clubSelect" method="GET">
-                    <input type="hidden" name="League_select" value="{{ league_select }}">
-                    <select name="club_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">Select Club</option>
-                        {% for club in clubs_list %}
-                            <option value="{{ club.id }}" {% if selected_club and selected_club.id == club.id %}selected{% endif %}>
-                                {{ club.name }}
+        <div class="row g-0 mb-3">
+            <div class="col-12">
+                <form class="leagueSelect" action="" method="get">
+                    <select name="League_select" class="form-select" onchange="this.form.submit()">
+                        <option value="">Select League</option>
+                        {% for key, val in stored_leagues %}
+                            <option value="{{ key }}" {% if league_select == key %}selected{% endif %}>
+                                {{ league_names[key] }}
                             </option>
                         {% endfor %}
                     </select>
                 </form>
-            {% endif %}
+            </div>
         </div>
-    </div>
 
-    <!-- Club card -->
-    <div class="row g-0 mb-3">
-        <div class="col-12">
-            {% if selected_club %}
-                <div id='club-card' class='club-card'
-                    style='background: linear-gradient(60deg, {{ selected_club.primary_color }}, {{ selected_club.secondary_color }});'>
-                    {% if selected_club.logo %}
-                        <img class='club-logo' src='data:image/png;base64,{{ selected_club.logo }}' alt='{{ selected_club.name }} Logo'>
-                    {% endif %}
-                    <div>
-                        <h2 class='clubName-text'>{{ selected_club.name }}</h2>
-                        <p>
-                            Founded in {{ selected_club.founded_year }}<br>
-                            Current stadium: {{ selected_club.stadium }}<br>
-                            City: {{ selected_club.city }}
-                        </p>
+        <!-- Club selection dropdown -->
+        <div class="row g-0 mb-3">
+            <div class="col-12">
+                {% if clubs_list %}
+                    <form class="clubSelect" method="GET">
+                        <input type="hidden" name="League_select" value="{{ league_select }}">
+                        <select name="club_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">Select Club</option>
+                            {% for club in clubs_list %}
+                                <option value="{{ club.id }}" {% if selected_club and selected_club.id == club.id %}selected{% endif %}>
+                                    {{ club.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Club card -->
+        <div class="row g-0 mb-3">
+            <div class="col-12">
+                {% if selected_club %}
+                    <div id='club-card' class='club-card'
+                        style='background: linear-gradient(60deg, {{ selected_club.primary_color }}, {{ selected_club.secondary_color }});'>
+                        {% if selected_club.logo %}
+                            <img class='club-logo' src='data:image/png;base64,{{ selected_club.logo }}' alt='{{ selected_club.name }} Logo'>
+                        {% endif %}
+                        <div>
+                            <h2 class='clubName-text'>{{ selected_club.name }}</h2>
+                            <p>
+                                Founded in {{ selected_club.founded_year }}<br>
+                                Current stadium: {{ selected_club.stadium }}<br>
+                                City: {{ selected_club.city }}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <!-- Trophies table -->
-    <div class="row g-0">
-        <div class="col-12">
-            {% if trophies_list %}
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Trophy Name</th>
-                            <th scope="col">Trophy Type</th>
-                            <th scope="col">Titles Won</th>
-                            <th scope="col">Last Won</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for trophy in trophies_list %}
+        <!-- Trophies table -->
+        <div class="row g-0">
+            <div class="col-12">
+                {% if trophies_list %}
+                    <table class="table table-dark">
+                        <thead>
                             <tr>
-                                <td>{{ trophy.trophy_name }}</td>
-                                <td>{{ trophy.trophy_type }}</td>
-                                <td>{{ trophy.titles_won }}</td>
-                                <td>{{ trophy.last_won }}</td>
+                                <th scope="col">Trophy Name</th>
+                                <th scope="col">Trophy Type</th>
+                                <th scope="col">Titles Won</th>
+                                <th scope="col">Last Won</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
+                        </thead>
+                        <tbody>
+                            {% for trophy in trophies_list %}
+                                <tr>
+                                    <td>{{ trophy.trophy_name }}</td>
+                                    <td>{{ trophy.trophy_type }}</td>
+                                    <td>{{ trophy.titles_won }}</td>
+                                    <td>{{ trophy.last_won }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    </main>
 
     <footer class="footer mt-4">
         <p>Copyright © 2025</p>

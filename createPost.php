@@ -18,8 +18,7 @@ if (!$user) {
 $notLoggedIn = $_SESSION['notLoggedIn'] ?? false;
 unset($_SESSION['notLoggedIn']); 
 
-echo $twig->render('blog.html.twig', [
+echo $twig->render('createPost.html.twig', [
     'user' => $user,
-    'current_page' => 'blog',
-    'notLoggedIn' => $notLoggedIn  
+    'current_page' => 'createPost'
 ]);

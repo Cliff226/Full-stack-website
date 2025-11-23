@@ -59,13 +59,10 @@ if ($needsUpdate) {
 }
 
 // Fetch updated standings
-$stmt = $pdo->prepare("
-    SELECT * FROM standings
-    WHERE league_id = :league_id
-    ORDER BY position ASC
-");
+$stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :league_id ORDER BY position ASC");
 $stmt->execute(['league_id' => $leagueId]);
 $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Escape team names
 foreach ($standings as &$row) {

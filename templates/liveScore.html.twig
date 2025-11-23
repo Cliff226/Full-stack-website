@@ -15,9 +15,6 @@
         </nav>
     </header>
     <main class = "main">
-        <section id="LiveScores">
-            <h2>Live Scores</h2>
-        </section>
         <section id="welcome-message">
             {# <?php
             if (isset($_SESSION['user'])) {
@@ -52,7 +49,7 @@
             </div>
         </div>
     </div>
-    <main class = "main">
+    <div class="liveScoresMatchesContainer">
         <div id="LiveScoresMatches"> 
             {% for country, comps in groupedMatches %}
             {# country is the key comps is the value (associative array) example 'England' => [

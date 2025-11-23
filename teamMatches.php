@@ -2,6 +2,7 @@
 session_start();
 require_once 'vendor/autoload.php';
 require_once 'standingsDatabaseConnection.php';
+require_once 'standingsApi.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
@@ -33,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
 
     $needsUpdate = true;
 
+    //check last updated
     if (!empty($matchesData)) {
         $stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM team_matches WHERE team_id = :team_id");
         $stmt->execute(['team_id' => $teamId]);
@@ -54,7 +56,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
         $stmt = $pdo->prepare("SELECT * FROM team_matches WHERE team_id = :team_id ORDER BY kickoff ASC");
         $stmt->execute(['team_id' => $teamId]);
         $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $country = $matchesData[0]['country'];
+
+        $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country");
+        $stmt->execute(['country' => $country]);
+        $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $leagueCode = $leagueData['code'];
+        $leagueId = $leagueData['id'];
+        updateStandings($leagueCode, $leagueId);
     }
+    
+    $country = $matchesData[0]['country'];
+
+    // Get league info
+
+        $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country");
+        $stmt->execute(['country' => $country]);
+        $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $league_id = $leagueData['id'];
+        $leagueId = $leagueData['id'];
+        $leagueName = $leagueData['name'];
+        $leagueCrest = $leagueData['crest'];
+
+        $stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :league_id ORDER BY position ASC");
+        $stmt->execute(['league_id'=> $league_id]);
+        $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT * FROM standings WHERE team_id = :team_id");
+        $stmt->execute(['team_id' => $teamId]);
+        $teamData = $stmt->fetch(PDO::FETCH_ASSOC); 
+
 
     // Build grouped array
     foreach ($matchesData as $row) {
@@ -99,5 +132,9 @@ echo $twig->render('teamSearch.html.twig', [
     'groupedMatches' => $groupedMatches,
     'user' => $_SESSION['user'] ?? null,
     'current_page' => 'LiveScore',
-    'teamNotfound' => $teamNotfound
+    'leagueName'  => $leagueName,
+    'leagueCrest' => $leagueCrest,
+    'standings'   => $standings,
+    'teamData'    => $teamData
+
 ]);

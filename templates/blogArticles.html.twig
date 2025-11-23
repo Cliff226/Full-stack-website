@@ -14,9 +14,43 @@
             {{ include('navigation.html.twig') }}     
         </nav>
     </header>
-    <main>
-        <h2>Blog</h2>
-        <section id="blog-articles">
+    <main class="main">
+        <div id="blog-articles-navigation">
+            <a href="/blog.php" class="btn btn-primary mb-3">Back to Blog Home</a>  
+        </div>
+        <div class="mb-4">
+            <h2><img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo">{{ leagueName }} Blog</h2>
+            <h3> Articles for {{ leagueName }}</h3>
+            <p>Browse through the latest articles and updates about the {{ leagueName}}.</p>
+        </div>
+            <a href="createPost.php" class="btn btn-success mb-3">Add New Post</a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.author }}</td>
+                        <td>{{ post.created_at }}</td>
+                        <td>
+                            <a href="edit.php?id={{ post.id }}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="delete.php?id={{ post.id }}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+
+        
+        
+        {# <section id="blog-articles">
             {% for article in articles %}
                 <article class="blog-article">
                     <h3>{{ article.title }}</h3>
@@ -26,8 +60,9 @@
             {% else %}
                 <p>No articles found.</p>
             {% endfor %}
-        </section>                 
+        </section>                  #}
     </main>
+    
     <footer class = "footer">
         <p>Copyright © 2025</p>
     </footer>

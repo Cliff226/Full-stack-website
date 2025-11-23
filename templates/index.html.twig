@@ -48,7 +48,6 @@
                         <a class ="link-section" href="/liveScore.php">
                             <img class="link-section" src="public/images/kick.jpg" alt="GoalRush Logo">
                             <h3>Live Scores</h3>
-                            <p>Stay updated with real-time scores.</p>
                         </a>
                     </div>
                 </div>
@@ -59,7 +58,6 @@
                         <a class ="link-section" href="/blog.php">
                             <img class="link-section" src="public/images/championsball.jpg" alt="ball image">
                             <h3>Blog</h3>
-                            <p>Read in-depth articles and match analyses.</p>
                         </a>
                     </div>
                 </div>
@@ -70,7 +68,6 @@
                         <a class ="link-section" href="/News.php">
                             <img class="link-section" src="public/images/net.jpg" alt="net image">
                             <h3>News</h3>
-                            <p>Get the latest football news and updates.</p>
                        </a>
                     </div>
                 </div>
@@ -80,8 +77,11 @@
     <footer class = "footer">
         <p>Copyright © 2025</p>
     </footer>
-        {% include 'searchModal.html.twig' %}
-        <script> const TEAM_NOT_FOUND = {{ teamNotfound ? 'true' : 'false' }}; </script>
-        <script src="public/js/teamSearchModal.js"></script>
+        {% include 'indexModal.html.twig' %}
+        <script> 
+            const TEAM_NOT_FOUND = {{ teamNotfound ? 'true' : 'false' }}; 
+            const NOT_LOGGED_IN = {{ notLoggedIn ? 'true' : 'false' }};  
+        </script>     
+        <script src="public/js/indexModal.js"></script>
 </body>
 </html>
