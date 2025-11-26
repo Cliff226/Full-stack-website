@@ -1,5 +1,5 @@
 <?php
-require_once 'standingsDataBaseConnection.php';
+require_once 'dbConnections/standingsDatabaseConnection.php';
 
     $stmt = $pdo->query('SELECT team_name, team_id FROM standings;');
     $clubs = $stmt->fetchAll();
@@ -35,3 +35,5 @@ if ($q !== "") {
 }
 
 echo $hint === "" ? "no suggestion" : $hint;
+//Close PDO connection
+$pdo = null;

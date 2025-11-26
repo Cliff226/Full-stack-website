@@ -1,9 +1,8 @@
 <?php
 session_start();
-
 require_once 'vendor/autoload.php';
-require_once 'standingsDatabaseConnection.php'; // PDO connection
-require_once 'standingsApi.php'; // API update function
+require_once 'dbConnections/standingsDatabaseConnection.php';
+require_once 'standingsApi.php';
 
 // Twig setup
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');

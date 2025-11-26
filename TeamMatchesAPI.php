@@ -6,7 +6,7 @@ if (!isset($teamId)) {
     die("Error: teamId not set for API fetch.");
 }
 
-require_once 'standingsDataBaseConnection.php'; // DB for team_matches
+require_once 'dbConnections\standingsDatabaseConnection.php'; // DB for team_matches
 
 $apiToken = '0c98b44563234432be112138964c7529';
 
@@ -99,3 +99,5 @@ foreach ($matches as $match) {
         ':kickoff' => $kickoff
     ]);
 }
+//Close PDO connection
+$pdo = null;

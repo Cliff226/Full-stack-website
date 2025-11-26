@@ -7,6 +7,7 @@
   background-size: cover;
   background-attachment: fixed;
   display: grid;
+  padding-bottom: 100px; 
 } 
 .main 
 {
@@ -23,7 +24,7 @@
 }
 
 .stadium-image {
-  margin-top: 90px;
+  margin-top: 40px;
   width: 100%;
   height: auto;
   display: block;
@@ -74,8 +75,16 @@
   text-decoration:bold; 
   text-shadow:#222         
 } 
-  
+
 }
+
+.scoreteamCrest{
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  padding: 2px;
+}
+
 #searchInput{
   margin: 0 0 -15px 0;
 }
@@ -145,7 +154,7 @@ tr:hover {
 
 
 .buttonIcon img {
-  width: 5%; 
+  width: 5%;
 }
 .buttonIcon {
   display: flex;
@@ -204,35 +213,78 @@ tr:hover {
   display: block;
   object-fit: cover;  
   filter: brightness(.6);  
+  margin: 5%;
 }
 .feature-icon{
   height: auto;
   display: block;
   object-fit: cover;  
-  filter: brightness(.6);  
+  filter: brightness(.8);  
 }
-.link-section {
+
+#blogLeagueContainer {
+  font-size: medium;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5%;
+  background-color: #588b8b94;
+  border: solid white 2px;
+  text-decoration: none;
+  color: white;
+  border-radius: 10px;  
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+
+
+.link-section-ancor{
   font-size: medium;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 10%;
+  background-color: #588b8b;
+  border: solid white 2px;
   text-decoration: none;
   color: white;
-  background-color: #588b8b;
   border-radius: 10px;  
   margin-bottom: 10px;
-  padding: 10px;
-  height: 370px;
-  overflow:hidden;
-
+  border-radius: 15px;
 }
-.link-section img {
-  height: 75%;
+.link-section-img {
+  display: flex ;
+  align-items: center;
+  width: 70%;
   display: block;
   object-fit: cover; 
-  padding: 0%;
+  margin: 5% 0 5% 0;
+  border-radius: 15px;
+  border: solid white 2px;
+}
 
+ #blogLeaguesRow {
+    justify-content: center;
+  }
+
+
+img.link-section-blog{
+  width: 85%;
+  padding: 5%;
+  border-radius: 10px;
+  background-color: white;
+  margin: 10%
+}
+
+.pageTitle{
+  text-align: center;
+  margin-bottom: 30px;
+  background-color: #222;
+  color: #c8553d;
+  padding: 15px;
+  border-radius: 10px;
+  font-style: oblique;
 }
 
 #features-section {
@@ -253,7 +305,7 @@ form.inline-form {
 }
 form.leagueSelect {
   max-width: 100%;
-  margin-top: 15%;
+  margin-top: 1%;
   padding-bottom: 0;
   box-shadow: none;
   background: transparent;
@@ -304,7 +356,7 @@ label {
 
 /* liveScore page */
 #livescoreButtons {
-  background-color: rgba(151, 126, 126, 0.1);
+  background-color: #588b8b;
   padding: 20px;
   border-radius: 10px;
 }
@@ -406,7 +458,11 @@ img.websitelogo {
 }
 
 #leagueCrest{
- width:50px;
+
+    width: 60px;
+    background-color: rgb(255, 255, 255);
+    padding: 2px;
+    border-radius: 5px;
 }
 #standingsContainer{
   padding: 20px;
@@ -421,7 +477,7 @@ img.websitelogo {
     }
 
       .link-section p,h3 {
-      font-size: x-small !important;
+      font-size: medium !important;
     }
     
 
@@ -482,11 +538,16 @@ img.websitelogo {
 footer {
   text-align: center;
   margin-top: 20px;
-  padding: 10px;
+  padding: 15px;
   background: #222;
   color: #fff;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
 }
 /* Responsive Design for club and league selection*/
 /* Sidebar styling */

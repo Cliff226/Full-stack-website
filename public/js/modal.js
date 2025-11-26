@@ -1,23 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // Make sure the variable exists
-    if (typeof register === 'undefined' || !register) return;
+    if (typeof window.status === 'undefined' || !window.status) return;
 
-    if (register === 'success') {
+    if (window.status === 'success') {
         const modalEl = document.getElementById('successModal');
-        if (modalEl) { // Only show if the modal is actually on the page
+        if (modalEl) {
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
         }
-        // setTimeout ensures the modal opens AFTER the page is rendered
-        // To avoid the "aria-hidden" accessibility warning.
 
         setTimeout(() => {
-            window.location.href = '/dashboard';
-        }, 3000);
+            window.location.href = 'index.php';
+         }, 3000);
 
-    } else if (register === 'error') {
-
+    } else if (window.status === 'error') {
         const modalEl = document.getElementById('errorModal');
         if (modalEl) {
             const modal = new bootstrap.Modal(modalEl);

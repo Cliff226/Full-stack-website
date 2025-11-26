@@ -18,8 +18,16 @@
         <div id="Welcome-section" class="welcome-section">
             <img src="public/images/San-siro.jpg" alt="Stadium Image" class="stadium-image">
             <div class="banner">
-                <h1>Welcome to GoalRush</h1>
-                <p>Your ultimate destination for live football scores, news, and updates from leagues around the world.</p>
+                <h1>Welcome to GoalRush {{ userData.name|upper }} {{ userData.surname|upper }}</h1>
+
+                <p>
+                    Your ultimate destination for live football scores and news.
+                    {% if userData is defined and userData.favorite_league %}
+                        Stay up to date with the latest from your favorite league: {{ userData.favorite_league|upper }}!
+                    {% else %}
+                        Discover scores, news, and updates from all leagues worldwide.
+                    {% endif %}
+                </p>
                 <a id="scrolldownlink" scrolldown href="#features-section">Explore</a>
             </div>
         </div>
@@ -42,31 +50,31 @@
             </div>
         </div>
         <div class="row g-0" id="features-section">
-            <div class="col sml-2">
+            <div class="col sml-3">
                 <div class="feature-icon">
                     <div class="link-section">
-                        <a class ="link-section" href="/liveScore.php">
-                            <img class="link-section" src="public/images/kick.jpg" alt="GoalRush Logo">
+                        <a class ="link-section-ancor" href="/liveScore.php">
+                            <img class="link-section-img" src="public/images/kick.jpg" alt="kick image">
                             <h3>Live Scores</h3>
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="col sml-2">
+            <div class="col sml-3">
                 <div class="feature-icon">
                     <div class="link-section">
-                        <a class ="link-section" href="/blog.php">
-                            <img class="link-section" src="public/images/championsball.jpg" alt="ball image">
+                        <a class ="link-section-ancor" href="/blog.php">
+                            <img class="link-section-img" src="public/images/championsball.jpg" alt="ball image">
                             <h3>Blog</h3>
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="col sml-2">
+            <div class="col sml-3">
                 <div class="feature-icon">
                     <div class="link-section">
-                        <a class ="link-section" href="/News.php">
-                            <img class="link-section" src="public/images/net.jpg" alt="net image">
+                        <a class ="link-section-ancor" href="/News.php">
+                            <img class="link-section-img" src="public/images/net.jpg" alt="net image">
                             <h3>News</h3>
                        </a>
                     </div>

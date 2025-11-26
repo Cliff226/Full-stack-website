@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'vendor/autoload.php';
-require_once 'standingsDatabaseConnection.php';
+require_once 'dbConnections/standingsDatabaseConnection.php';
 require_once 'standingsApi.php';
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
@@ -9,6 +9,7 @@ $twig = new \Twig\Environment($loader);
 
 $matchesData = [];
 $groupedMatches = [];
+$clubName = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
 

@@ -1,51 +1,65 @@
 <?php
-// Debug — remove in production
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once 'vendor/autoload.php';
-require_once 'almanacDatabaseConnection.php'; // Make sure this sets $pdo = new PDO(...)
+require_once 'dbConnections/almanacDatabaseConnection.php';
 
 session_start();
 
-// Twig setup
+
+// Twig Setup
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
-// Get selected league from GET (empty = all leagues)
-$selectedLeague = $_GET['league'] ?? '';
-$selectedLeague = trim($selectedLeague);
 
-// When the refresh button
+// Get selected league from GET
+$selectedLeague = trim($_GET['league'] ?? '');
+
+
+// Handle Refresh Button POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh'])) {
-    include 'livescoreAPI.php'; // This should update the livematches table
-    // Reload the page
-    header("Location: liveScore.php" . ($selectedLeague !== '' ? "?league=$selectedLeague" : ""));
+    include 'livescoreAPI.php'; // Update matches from API
+
+    // Redirect to same page to avoid form resubmission
+    $url = "liveScore.php";
+    if ($selectedLeague !== '') {
+        $url .= "?league=" . urlencode($selectedLeague);
+    }
+    header("Location: $url");
     exit;
 }
+
 
 // Load all leagues for dropdown
 $leagues = [];
 $stmt = $pdo->query("SELECT DISTINCT competition FROM livematches ORDER BY competition ASC");
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $leagues[] = e($row['competition']);
+    $leagues[] = $row['competition']; // Keep raw data; Twig will escape output
+}
+
+// Optional: Validate GET league exists in DB
+if ($selectedLeague !== '' && !in_array($selectedLeague, $leagues)) {
+    $selectedLeague = '';
 }
 
 // Fetch matches
 if ($selectedLeague !== '') {
-    // Filter by league
+    // Filter matches by selected league
     $stmt = $pdo->prepare("
-        SELECT * FROM livematches
+        SELECT match_id, competition, country, home_team, away_team,
+               home_team_crest, away_team_crest, home_score, away_score,
+               minute, kickoff
+        FROM livematches
         WHERE DATE(kickoff) = CURDATE()
         AND competition = :competition
         ORDER BY country ASC, competition ASC, kickoff ASC
     ");
     $stmt->execute(['competition' => $selectedLeague]);
 } else {
-    // All leagues
+    // Fetch all leagues
     $stmt = $pdo->query("
-        SELECT * FROM livematches
+        SELECT match_id, competition, country, home_team, away_team,
+               home_team_crest, away_team_crest, home_score, away_score,
+               minute, kickoff
+        FROM livematches
         WHERE DATE(kickoff) = CURDATE()
         ORDER BY country ASC, competition ASC, kickoff ASC
     ");
@@ -53,29 +67,33 @@ if ($selectedLeague !== '') {
 
 $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
 // Group matches by country & competition
 $groupedMatches = [];
+
 foreach ($matchesData as $row) {
-    $country = e($row['country']);
-    $competition = e($row['competition']);
+    $country = $row['country'];
+    $competition = $row['competition'];
 
     if (!isset($groupedMatches[$country])) $groupedMatches[$country] = [];
     if (!isset($groupedMatches[$country][$competition])) $groupedMatches[$country][$competition] = [];
 
     $groupedMatches[$country][$competition][] = [
-        'id' => e($row['match_id']),
+        'id' => (int)$row['match_id'],
         'competition' => ['name' => $competition],
         'area' => ['name' => $country],
-        'homeTeam' => ['name' => htmlspecialchars_decode (e($row['home_team']))],
-        'awayTeam' => ['name' => htmlspecialchars_decode(e($row['away_team']))],
+        'homeTeam' => ['name' => $row['home_team']],
+        'awayTeam' => ['name' => $row['away_team']],
+        'homeTeamCrest' => ['crest' => $row['home_team_crest']],
+        'awayTeamCrest' => ['crest' => $row['away_team_crest']],
         'score' => [
             'fullTime' => [
                 'home' => (int)$row['home_score'],
-                'away' => (int)$row['away_score']
+                'away' => (int)$row['away_score'],
             ]
         ],
-        'minute' => htmlspecialchars_decode($row['minute']),
-        'utcDate' => e($row['kickoff'])
+        'minute' => $row['minute'],
+        'utcDate' => $row['kickoff'],
     ];
 }
 
@@ -87,3 +105,6 @@ echo $twig->render('liveScore.html.twig', [
     'user' => $_SESSION['user'] ?? null,
     'current_page' => 'LiveScore'
 ]);
+
+// Close PDO connection
+$pdo = null;

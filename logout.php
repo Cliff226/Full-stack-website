@@ -12,8 +12,15 @@ $_SESSION = [];
 // Destroy session
 session_destroy();
 
+// Clear the cookie
+setcookie("userData", "", time() - 3600, "/", "", false, true); // HttpOnly = true
+
 // Render login page
 echo $twig->render('login.html.twig', [
     'user' => null,
     'current_page' => 'Login'
 ]);
+//Close PDO connection
+$pdo = null;
+
+

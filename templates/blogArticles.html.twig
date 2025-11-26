@@ -15,15 +15,22 @@
         </nav>
     </header>
     <main class="main">
-        <div id="blog-articles-navigation">
-            <a href="/blog.php" class="btn btn-primary mb-3">Back to Blog Home</a>  
-        </div>
-        <div class="mb-4">
-            <h2><img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo">{{ leagueName }} Blog</h2>
-            <h3> Articles for {{ leagueName }}</h3>
+        <div class="pageTitle" class="mb-4">
+            <h2>Blog </h2>
+            <h3> Articles for {{ leagueName }} <img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo"></h3>
             <p>Browse through the latest articles and updates about the {{ leagueName}}.</p>
         </div>
-            <a href="createPost.php" class="btn btn-success mb-3">Add New Post</a>
+        <div id="blog-articles-navigation">
+            <a href="/blog.php" class="btn btn-primary mb-3">Back to Blog Home</a>  
+            <div class="blog-articles-navigation" id="addPostButton">
+        <form action="blogArticles.php?league={{ leagueCode }}" method="get" class="d-inline">
+            <input type="hidden" name="league" value="{{ leagueCode }}">
+            <input type="submit" class="btn btn-primary mb-3" value="Refresh Articles">
+            <input type="text" name="search" placeholder="Search articles..." class="form-control d-inline-block w-auto mb-3">
+        </form>
+        <a href="createPost.php" class="btn btn-success mb-3">Add New Post</a>
+    </div>
+        </div>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -45,8 +52,19 @@
                         </td>
                     </tr>
                 {% endfor %}
+                <tr>
+                    <td colspan="4" class="text-center">No posts available.</td>
+                </tr>
         </tbody>
     </table>
+    <div class="addCommentSection" id="addCommentSection">
+        <form action="createComment.php?league={{ leagueCode }}" method="post">
+                <label for="content" class="form-label"></label>
+                <textarea class="form-control" id="content" name="content" rows="3" required placeholder= "Add a comment"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    </div>
 
         
         

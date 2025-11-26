@@ -1,5 +1,5 @@
 <?php
-require_once 'almanacDatabaseConnection.php';
+require_once 'dbConnections/almanacDatabaseConnection.php'; 
 
 $apiToken = '0c98b44563234432be112138964c7529';
 
@@ -28,13 +28,16 @@ if (empty($matches)) return;
 
 $sql = "
 INSERT INTO livematches 
-(match_id, competition, country, home_team, away_team, home_score, away_score, minute, kickoff)
-VALUES (:match_id, :competition, :country, :home_team, :away_team, :home_score, :away_score, :minute, :kickoff)
+(match_id, competition, country, home_team, away_team, home_team_crest, away_team_crest, home_score, away_score, minute, kickoff)
+VALUES 
+(:match_id, :competition, :country, :home_team, :away_team, :home_team_crest, :away_team_crest, :home_score, :away_score, :minute, :kickoff)
 ON DUPLICATE KEY UPDATE
     competition = VALUES(competition),
     country = VALUES(country),
     home_team = VALUES(home_team),
     away_team = VALUES(away_team),
+    home_team_crest = VALUES(home_team_crest),
+    away_team_crest = VALUES(away_team_crest),
     home_score = VALUES(home_score),
     away_score = VALUES(away_score),
     minute = VALUES(minute),
@@ -49,6 +52,8 @@ foreach ($matches as $match) {
     $competition = $match['competition']['name'] ?? '';
     $country = $match['area']['name'] ?? '';
     $home = $match['homeTeam']['name'] ?? '';
+    $homeCrest = $match['homeTeam']['crest'] ?? '';
+    $awayCrest = $match['awayTeam']['crest'] ?? '';
     $away = $match['awayTeam']['name'] ?? '';
     $homeScore = (int)($match['score']['fullTime']['home'] ?? 0);
     $awayScore = (int)($match['score']['fullTime']['away'] ?? 0);
@@ -71,6 +76,8 @@ foreach ($matches as $match) {
         ':match_id' => $matchId,
         ':competition' => $competition,
         ':country' => $country,
+        ':home_team_crest' => $homeCrest,
+        ':away_team_crest'=> $awayCrest,
         ':home_team' => $home,
         ':away_team' => $away,
         ':home_score' => $homeScore,
@@ -79,3 +86,6 @@ foreach ($matches as $match) {
         ':kickoff' => $kickoff
     ]);
 }
+//Close PDO connection
+$pdo = null;
+

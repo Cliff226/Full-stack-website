@@ -1,12 +1,12 @@
 <?php
-// standingsApi.php
-require_once 'standingsDatabaseConnection.php';
+require_once'dbConnections/standingsDatabaseConnection.php'; // adjust path
 
 function updateStandings($leagueCode, $leagueId) {
 
-    $apiToken = "0c98b44563234432be112138964c7529";  // <--- put your API token here
-    $season = 2025;
+    global $pdo;
 
+    $apiToken = "0c98b44563234432be112138964c7529";
+    $season = 2025;
     $url = "https://api.football-data.org/v4/competitions/{$leagueCode}/standings";
 
     $curl = curl_init();
@@ -27,15 +27,12 @@ function updateStandings($leagueCode, $leagueId) {
     }
 
     $data = json_decode($response, true);
-
     if (!isset($data['standings'][0]['table'])) {
         return "No standings found in API response.";
     }
 
     $standings = $data['standings'][0]['table'];
 
-    // SQL insert/update
-    global $pdo;
     $stmt = $pdo->prepare("
         INSERT INTO standings (
             league_id, season, position, team_id, team_name, short_name, tla, crest,
@@ -64,7 +61,7 @@ function updateStandings($leagueCode, $leagueId) {
             ':season'        => $season,
             ':position'      => $team['position'],
             ':team_id'       => $team['team']['id'],
-            ':team_name'     => $team['team']['name'],
+            ':team_name'     => trim($team['team']['name']),
             ':short_name'    => $team['team']['shortName'] ?? null,
             ':tla'           => $team['team']['tla'] ?? null,
             ':crest'         => $team['team']['crest'] ?? null,
