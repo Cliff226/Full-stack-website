@@ -3,39 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalRush</title>
+    <title>Create Post - GoalRush</title>
     <link rel="stylesheet" href="public/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/autosize@4.0.2/dist/autosize.min.js"></script>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
-        </nav>
-    </header>
-    <main class="main">
-        <a href="/blog.php" class="btn btn-primary mb-3">Back to Blog Home</a>  
-        <h1>{{ form_title }}</h1>
-        <form method="post">
+
+<header class="header">
+    <nav>
+        {{ include('navigation.html.twig') }}
+    </nav>
+</header>
+
+<main class="main">
+    <div class="CreatePostForm">
+        <a href="/blogArticles.php?league={{ leagueCode }}" class="btn btn-primary mb-3">Back to {{leagueName}} Blog</a>  
+        <h1>Create New Post for {{leagueName}}</h1>
+        <form action="createPost.php" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label>Title</label>
-                <input type="text" name="title" class="form-control" value="{{ post.title|default('') }}" required>
+                <input type="text" name="title" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label>Content</label>
-                <textarea name="content" class="form-control" required>{{ post.content|default('') }}</textarea>
+                <textarea name="content" id="autoTextarea"  class="form-control" required></textarea>
             </div>
             <div class="mb-3">
-                <label>Author</label>
-                <input type="text" name="author" class="form-control" value="{{ post.author|default('') }}" required>
+                <label>Image</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
             </div>
-            <button type="submit" class="btn btn-success">Save</button>
+            <input type="hidden" name="league" value="{{ leagueCode }}">
+            <button type="submit" class="btn btn-success">Save Post</button>
         </form>
-    </main>
-    
-    <footer class = "footer">
-        <p>Copyright © 2025</p>
-    </footer>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>Copyright © 2025</p>
+</footer>
+<script>
+  // Initialize autosize on the textarea
+  autosize(document.getElementById('autoTextarea'));
+</script>
+
 </body>
 </html>

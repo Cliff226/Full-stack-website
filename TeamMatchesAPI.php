@@ -6,7 +6,7 @@ if (!isset($teamId)) {
     die("Error: teamId not set for API fetch.");
 }
 
-require_once 'dbConnections\standingsDatabaseConnection.php'; // DB for team_matches
+require_once 'dbConnections/standingsDatabaseConnection.php';
 
 $apiToken = '0c98b44563234432be112138964c7529';
 
@@ -37,9 +37,7 @@ $matches = $data['matches'] ?? [];
 if (empty($matches)) return;
 
 // Prepare SQL
-$sql = "
-INSERT INTO team_matches
-(match_id, team_id, competition, country, home_team, home_team_crest,
+$sql = "INSERT INTO team_matches(match_id, team_id, competition, country, home_team, home_team_crest,
  away_team, away_team_crest, home_score, away_score, minute, kickoff, last_updated)
 VALUES (:match_id, :team_id, :competition, :country, :home_team, :home_team_crest,
         :away_team, :away_team_crest, :home_score, :away_score, :minute, :kickoff, NOW())
@@ -99,5 +97,4 @@ foreach ($matches as $match) {
         ':kickoff' => $kickoff
     ]);
 }
-//Close PDO connection
-$pdo = null;
+

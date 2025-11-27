@@ -1,5 +1,5 @@
 <?php
-require_once'dbConnections/standingsDatabaseConnection.php'; // adjust path
+require_once 'dbConnections/standingsDatabaseConnection.php'; // adjust path
 
 function updateStandings($leagueCode, $leagueId) {
 

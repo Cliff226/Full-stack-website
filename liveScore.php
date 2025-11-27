@@ -9,6 +9,11 @@ session_start();
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
+//set user if logged in 
+if(isset($_SESSION['user'])){
+    $user =  $_SESSION['user'] ?? null;
+}
+
 
 // Get selected league from GET
 $selectedLeague = trim($_GET['league'] ?? '');
@@ -102,7 +107,7 @@ echo $twig->render('liveScore.html.twig', [
     'groupedMatches' => $groupedMatches,
     'leagues' => $leagues,
     'selectedLeague' => $selectedLeague,
-    'user' => $_SESSION['user'] ?? null,
+    'user' => $user,
     'current_page' => 'LiveScore'
 ]);
 

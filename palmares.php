@@ -7,6 +7,11 @@ session_start();
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader, ['cache' => false]);
 
+//set user if logged in 
+if(isset($_SESSION['user'])){
+    $user =  $_SESSION['user'] ?? null;
+}
+
 // Load all leagues
 $stored_leagues = [];
 $league_names = [];
@@ -113,7 +118,7 @@ if ($club_id && $trophy_table && $league_id) {
 
 // Render Twig template
 echo $twig->render('palmares.html.twig', [
-    'user' => $_SESSION['user'] ?? null,
+    'user' => $user,
     'stored_leagues' => $stored_leagues,
     'league_names' => $league_names,
     'league_select' => $league_select,

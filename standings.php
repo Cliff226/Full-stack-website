@@ -8,6 +8,11 @@ require_once 'standingsApi.php';
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, ['cache' => false]);
 
+//set user if logged in 
+if(isset($_SESSION['user'])){
+    $user =  $_SESSION['user'] ?? null;
+}
+
 // Get selected league from GET
 $leagueCode = trim($_GET['league'] ?? '');
 
@@ -73,6 +78,9 @@ echo $twig->render('standings.html.twig', [
     'leagueName'  => $leagueName,
     'leagueCrest' => $leagueCrest,
     'standings'   => $standings,
-    'user'        => $_SESSION['user'] ?? null,
+    'user'        => $user,
     'current_page' => 'Standings'
 ]);
+
+//Close PDO connection
+$pdo = null;

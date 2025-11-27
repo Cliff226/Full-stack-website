@@ -14,15 +14,18 @@ $notLoggedIn = $_SESSION['notLoggedIn'] ?? false;
 unset($_SESSION['notLoggedIn']);
 
 $userData = null;
+$user = null;
 
 if (isset($_COOKIE["userData"])) {
     $userData = json_decode($_COOKIE["userData"], true);
 }
-
+if(isset($_SESSION['user'])){
+    $user =  $_SESSION['user'] ?? null;
+}
 
 echo $twig->render('index.html.twig', [
-    'user' => $_SESSION['user'] ?? null,
     'current_page' => 'Home',
+    'user' => $user,
     'teamNotfound' => $teamNotfound,
     'notLoggedIn' => $notLoggedIn,
     'userData'=> $userData

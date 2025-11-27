@@ -86,6 +86,4 @@ foreach ($matches as $match) {
         ':kickoff' => $kickoff
     ]);
 }
-//Close PDO connection
-$pdo = null;
 

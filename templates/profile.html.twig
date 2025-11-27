@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <header class = "header">
+        <nav> 
+            {{ include('navigation.html.twig') }}     
+        </nav>
+    </header>
+    <main class ="main"> 
+        <div class= 'profile'>
+            <h1>{{ user_name }}'s Profile</h1>
+
+            <h2>Your Articles</h2>
+            {% for post in posts %}
+            <div class="user-post">
+                <h3>{{ post.title }}</h3>
+                <p>Created: {{ post.created_at }}</p>
+                <a class= 'linkButton' href="editPost.php?id={{ post.id }}">Edit</a>
+                <a class= 'linkButton' href="deletePost.php?id={{ post.id }}" onclick="return confirm('Delete this article?')">Delete</a>
+            </div>
+            {% else %}
+            <p>You have no articles.</p>
+            {% endfor %}
+
+            <h2>Your Comments</h2>
+            {% for comment in comments %}
+            <div class="user-comment">
+                <p>On article: <a href="fullArticle.php?articleId={{ comment.post_id }}">{{ comment.post_title }}</a></p>
+                <p>{{ comment.Comment_content }}</p>
+                <p>Created: {{ comment.created_at }}</p>
+                <a class= 'linkButton' href="editComment.php?id={{ comment.id }}">Edit</a> 
+                <a class= 'linkButton' href="deleteComment.php?commentId={{ comment.id }}" onclick="return confirm('Delete this comment?')">Delete
+                </a>
+            </div>
+            {% else %}
+            <p>You have not made any comments.</p>
+            {% endfor %}
+        </div>
+    </main>
+    <footer class = "footer">
+        <p>Copyright © 2025</p>
+    </footer>
+</body>
+</html>

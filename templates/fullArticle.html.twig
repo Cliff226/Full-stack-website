@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalRush</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <header class = "header">
+        <nav> 
+            {{ include('navigation.html.twig') }}   
+        </nav>
+    </header>
+    <main class="main">
+        <div class="pageTitle" class="mb-4">
+            <h2>Article By {{post.author_name}}</h2>
+        </div>
+        <div class ="articleMain">
+                         <a href="/blogArticles.php?league={{post.league_code}}" class="btn btn-primary mb-3">Back to {{leagueName}} Blog</a> 
+            {% if post is empty %}
+                <p>No posts for this league yet.</p>
+            {% else %}
+                <div class="row g-0 post">
+                    <div class = "col sml-6 postContent">
+                        <h2>{{ post.title }}</h2>
+                    </div>
+                    <div class = "col sml-6 postContent">
+                    {% if post.image_path %}
+                        <img class = "articleImage"src="{{ post.image_path }}" alt="{{ post.title }}">
+                    {% endif %}
+                </div> 
+                <div>
+                <div class ="row g-0">
+                    <div class = " col sml-6 postContent">
+                        <p>{{ post.content }}</p><br>
+                        <p>By {{ post.author_name }} on {{ post.created_at|date("Y-m-d H:i") }}</p>
+                    </div>
+                </div>
+                {# display comments #}
+                <div class='CommentSection'>
+                    <h2>Comments</h2>
+                    {% if comments is empty %}
+                        <p>No comments yet. Be the first to comment!</p>
+                    {% else %}
+                        {% for comment in comments %}
+                            <div class="comment">
+                                <p><strong>{{ comment.author_name }}</strong> on {{ comment.created_at|date("Y-m-d H:i") }}</p>
+                                <p>{{ comment.Comment_content }}</p>
+                                <hr>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {# enter a comment section #}
+                <div class='addCommentSection'>
+                    <h3>Leave a Comment</h3>
+                    {% if error %}
+                        <p>{{ error }}</p>
+                    {% endif %}
+                    {% if success %}
+                        <p>{{ success }}</p>
+                    {% endif %}
+                    
+                    <form method="post" action="">
+                        <textarea class="form-control" name="comment_text" placeholder="Your Comment" required></textarea><br>
+                        <button class="btn btn-primary" type="submit">Submit Comment</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    
+    <footer class = "footer">
+        <p>Copyright © 2025</p>
+    </footer>
+</body>
+</html>

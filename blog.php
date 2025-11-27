@@ -47,7 +47,8 @@ foreach ($leagues as $row) {
         'id'      => $row['id'],
         'name'    => $row['name'],
         'country' => $row['country'],
-        'crest'   => $row['crest']
+        'crest'   => $row['crest'],
+        'code'    => $row['code']
     ];
 
 }

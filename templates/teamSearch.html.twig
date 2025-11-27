@@ -8,34 +8,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" 
+            crossorigin="anonymous"></script>
+
+    <header class="header">
         <nav> 
             {{ include('navigation.html.twig') }}     
         </nav>
     </header>
-    <main class = "main">
 
+    <main class="main">
         <div class="pageTitle" id="SearchedTeamContainer">
-             <h1 class="mt-4">Search Result for {{ teamData.team_name }}</h1>
-             <p>Here is the information for the team you searched for, including season matches and league standings.</p>
+            <h1 class="mt-4">Search Result for {{ teamData.team_name }}</h1>
+            <p>Here is the information for the team you searched for, including season matches and league standings.</p>
         </div>
 
         <section id="searchedTeamInfo" class="mt-4">
-            <h2> <img src="{{ teamData.crest }}" width="50" alt="logo"> {{ teamData.team_name }} </h2>            
+            <h2><img src="{{ teamData.crest }}" width="50" alt="logo"> {{ teamData.team_name }}</h2>            
             <p>
-                <strong>{{ teamData.team_name}} </strong> plays in the <strong>{{ leagueName }}</strong>.
-                and is currently positioned <strong> {{ teamData.position }}</strong> in the standings.
-                with <strong>{{ teamData.points  }}</strong> points.
+                <strong>{{ teamData.team_name }}</strong> plays in the <strong>{{ leagueName }}</strong> 
+                and is currently positioned <strong>{{ teamData.position }}</strong> in the standings,
+                with <strong>{{ teamData.points }}</strong> points 
                 and a goal difference of <strong>{{ teamData.goal_diff }}</strong>.
             </p>
         </section>
-        <div id="LiveScoresMatches"> 
-            {% for comps in groupedMatches %}
-                <div id="country-section">
-                <h2 class="mt-4"><h2>This are Matches for {{ teamData.team_name }} in the {{ country }}</h2>
 
-                {% for comp, matches in comps %}
+        <div id="LiveScoresMatches"> 
+            {% for comp, matches in groupedMatches %}
+                <div class="competition-section">
                     <h4 class="mt-3">{{ comp }}</h4>
 
                     <table class="table table-striped table-dark table-hover mt-2">
@@ -51,7 +52,7 @@
                         <tbody>
                             {% for m in matches %}
                                 <tr>
-                                    <td><img class="scoreteamCrest" src="{{ m.homeTeamCrest }}"  alt="logo"> {{ m.homeTeam.name }}</td>
+                                    <td><img class="scoreteamCrest" src="{{ m.homeTeamCrest }}" alt="logo"> {{ m.homeTeam.name }}</td>
                                     <td><img class="scoreteamCrest" src="{{ m.awayTeamCrest }}" alt="logo"> {{ m.awayTeam.name }}</td>
                                     <td>{{ m.score.fullTime.home }} - {{ m.score.fullTime.away }}</td>
                                     <td>{{ m.minute }}</td>
@@ -59,17 +60,17 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                    </table><br>
-
-                {% endfor %}
+                    </table>
                 </div>
+                <br>
             {% endfor %}
         </div>
-        <div  id="standingsContainer">
+
+        <div id="standingsContainer">
             <h1 class="mt-4">
                 Standings - {{ leagueName }}
-                <img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo">
-            <h1>
+                <img id="leagueCrest" src="{{ leagueCrest }}" alt="{{ leagueName }} logo">
+            </h1>
 
             <table class="table table-striped table-dark table-hover mt-4">
                 <tr>
@@ -88,7 +89,7 @@
                 {% for team in standings %}
                 <tr>
                     <td>{{ team.position }}</td>
-                    <td><img class='scoreteamCrest' src="{{ team.crest }}"alt="logo"> {{ team.team_name }}</td>
+                    <td><img class="scoreteamCrest" src="{{ team.crest }}" alt="logo"> {{ team.team_name }}</td>
                     <td>{{ team.played }}</td>
                     <td>{{ team.won }}</td>
                     <td>{{ team.draw_matches }}</td>
@@ -102,7 +103,8 @@
             </table>
         </div>
     </main>
-    <footer class = "footer">
+
+    <footer class="footer">
         <p>Copyright © 2025</p>
     </footer>
 </body>
