@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{ include('header.html.twig') }}
+    <body>
+
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+        <main class = "main">
+
+        <div class="profile">
+
+            <h1>Edit your Post</h1>
+
+                {% if error %}
+                <p style="color:red">{{ error|e }}</p>
+                {% endif %}
+
+                <form method="post">
+                    <label>Title:</label><br>
+                    <input type="text" name="title" value="{{ post.title|e }}"><br><br>
+
+                    <label>Content:</label><br>
+
+                    <textarea name="content" id="autoTextarea"  class="form-control" required>{{ post.content|e }}</textarea><br>
+
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                    <a class="btn btn-primary" href="profile.php">Cancel</a>
+                </form>
+            </div>
+
+        </main>
+        <footer class="footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {% include 'searchScript.html.twig' %}
+        {# Initialize autosize on the textarea #}
+        <script>autosize(document.getElementById('autoTextarea'));</script>
+    </body>
+</html>

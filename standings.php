@@ -1,21 +1,35 @@
 <?php
-session_start();
+require_once 'dbConnections/security.php' ;
 require_once 'vendor/autoload.php';
 require_once 'dbConnections/standingsDatabaseConnection.php';
 require_once 'standingsApi.php';
 
+session_start();
+
+
 // Twig setup
+
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
-$twig = new \Twig\Environment($loader, ['cache' => false]);
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'autoescape' => 'html', // always escape output by default for safety
+]);
+
+
+// Get logged-in user from session (for display)
+$user = $_SESSION['user'] ?? null;
+
 
 // Get selected league from GET
+// Trim whitespace and allowing only /[^a-zA-Z0-9_-]/ to prevent injection
 $leagueCode = trim($_GET['league'] ?? '');
+$leagueCode = preg_replace('/[^a-zA-Z0-9_-]/', '', $leagueCode);
 
 if (!$leagueCode) {
     die("No league selected.");
 }
 
-// Get league info
+// Fetch the league info from DB
 $stmt = $pdo->prepare("SELECT id, name, crest FROM leagues WHERE code = :code");
 $stmt->execute(['code' => $leagueCode]);
 $league = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,51 +42,49 @@ $leagueId = $league['id'];
 $leagueName = $league['name'];
 $leagueCrest = $league['crest'];
 
-// Check standings table for existing data
-$stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :league_id ORDER BY last_updated ASC");
+// Check if standings data exists and is fresh
+$stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM standings WHERE league_id = :league_id");
 $stmt->execute(['league_id' => $leagueId]);
-$standingsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$lastUpdate = $row['last_update'] ?? null;
 
-// Determine if update is needed
 $needsUpdate = true;
-if (!empty($standingsData)) {
-    $stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM standings WHERE league_id = :league_id");
-    $stmt->execute(['league_id' => $leagueId]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $lastUpdate = $row['last_update'] ?? null;
+if ($lastUpdate) {
+    $lastDate = new DateTime($lastUpdate);
+    $today = new DateTime();
 
-    if ($lastUpdate) {
-        $lastDate = new DateTime($lastUpdate);
-        $today = new DateTime();
-        $diff = $today->diff($lastDate)->days;
-
-        if ($diff < 1) {
-            $needsUpdate = false; // Data is fresh
-        }
+    //If dat is more than 1 day old it needs refresh from api
+    $diff = $today->diff($lastDate)->days;
+    if ($diff < 1) {
+        $needsUpdate = false;
     }
 }
 
-// Update from API if needed
+// Update standings from API if needed
 if ($needsUpdate) {
-    updateStandings($leagueCode, $leagueId);
+    updateStandings($leagueCode, $leagueId); // function uses prepared statements internally
 }
+
 
 // Fetch updated standings
 $stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :league_id ORDER BY position ASC");
 $stmt->execute(['league_id' => $leagueId]);
 $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-// Escape team names
+// Decode HTML entities for display
 foreach ($standings as &$row) {
     $row['team_name'] = htmlspecialchars_decode($row['team_name']);
 }
+
 
 // Render Twig template
 echo $twig->render('standings.html.twig', [
     'leagueName'  => $leagueName,
     'leagueCrest' => $leagueCrest,
     'standings'   => $standings,
-    'user'        => $_SESSION['user'] ?? null,
+    'user'        => $user,
     'current_page' => 'Standings'
 ]);
+
+// Close PDO connection
+$pdo = null;

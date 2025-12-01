@@ -1,14 +1,17 @@
 <?php
+require_once 'dbConnections/security.php' ;
 require_once 'vendor/autoload.php';
-require_once 'dbConnections/usersDatabaseConnection.php'; // Must set $pdo = new PDO(...)
+require_once 'dbConnections/usersDatabaseConnection.php';
 
-session_start();
+session_start(); // Required for both user sessions and CAPTCHA
 
 // Twig setup
 $loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader);
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'autoescape' => 'html', // output escaping
+]);
 
-// Initialize variables
 $errors = [];
 $status = '';
 $username = '';
@@ -16,32 +19,58 @@ $surname = '';
 $favorite_league = '';
 $user = null;
 
-
-// Handle POST submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // Trim inputs
+    // Trim and collect input
     $name = trim($_POST['name'] ?? '');
     $surname = trim($_POST['surname'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $dateOfBirth = trim($_POST['dateOfBirth'] ?? '');
     $password = $_POST['passwordLogin'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
-    $league = trim($_POST['league'] ?? '');
+    $favorite_league = trim($_POST['league'] ?? '');
+    $captcha_input = trim($_POST['captcha_input'] ?? '');
 
     // Validation
-    if (!$name || !$surname || !$email || !$dateOfBirth || !$password || !$confirm_password || !$league) {
+
+    // All fields required
+    if (!$name || !$surname || !$email || !$dateOfBirth || !$password || !$confirm_password || !$favorite_league || !$captcha_input) {
         $errors[] = "All fields are required.";
-    } elseif ($password !== $confirm_password) {
+    }
+
+    // Email format check and filtering 
+    if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    // Password checks
+    if ($password !== $confirm_password) {
         $errors[] = "Passwords do not match.";
-    } elseif (strlen($password) < 6) {
+    }
+    //Password lenght 
+    if (strlen($password) < 6) {
         $errors[] = "Password must be at least 6 characters long.";
-    } elseif ($dateOfBirth > date('Y-m-d', strtotime('-10 years'))) {
+    }
+
+    $minAgeDate = date('Y-m-d', strtotime('-10 years'));  // minimum age 10 years ago
+    $maxAgeDate = date('Y-m-d', strtotime('-110 years')); // maximum age 110 years ago
+
+    if ($dateOfBirth > $minAgeDate) {
         $errors[] = "You must be at least 10 years old to register.";
     }
 
+    if ($dateOfBirth < $maxAgeDate) {
+        $errors[] = "You cannot be more than 110 years old to register.";
+    }
 
-    // Check if email already exists
+    // Validate the CAPTCHA
+    if (!isset($_SESSION['captcha']) || $captcha_input !== $_SESSION['captcha']) {
+        $errors[] = "Incorrect CAPTCHA.";
+    }
+
+    // Unset the CAPTCHA after use to prevent it from being reused
+    unset($_SESSION['captcha']);
+
+    // Check the inputed email
     if (empty($errors)) {
         $stmt = $pdo->prepare("SELECT userId FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);
@@ -50,10 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Insert new user
+    // Inserting new user
     if (empty($errors)) {
-
-        // Hash password securely
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $pdo->prepare("
@@ -71,52 +98,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         if ($success) {
-
+            // Store safe info in session
             $_SESSION['user'] = $email;
             $_SESSION['name'] = $name;
 
-            // Success — show success modal
-            $status = 'success';
-            $username = $name;
-
-            // Create cookie for UI personalization (same as login)
+            //Cookie for UI personalisation
             $userData = [
                 'name' => $name,
                 'surname' => $surname,
                 'favorite_league' => $favorite_league
             ];
-
             setcookie(
                 "userData",
                 json_encode($userData),
-                time() + 3600,  // 1 hour
-                "/",            // available everywhere
-                "",             // domain
-                false,          // secure=false for localhost
-                true            // HttpOnly
+                time() + 3600,
+                "/",
+                "",
+                false,
+                true
             );
 
+            $status = 'success';
+            $username = $name;
         } else {
             $errors[] = "Database error — could not create user.";
             $status = 'error';
         }
-
     } else {
         $status = 'error';
     }
 }
 
 // Render Twig template
-
 echo $twig->render('register.html.twig', [
-    'status' => $status,               // success / error for modal
-    'errors' => $errors,               // display register errors
-    'username' => $username,     
-    'surname' => $surname,           
-    'favorite_league' => $favorite_league, 
-    'context' => 'register' // for modal display
+    'status' => $status,
+    'errors' => $errors,
+    'username' => $username,
+    'surname' => $surname,
+    'favorite_league' => $favorite_league,
+    'context' => 'register'
 ]);
 
-//Close PDO connection
-$pdo = null;
-
+$pdo = null; // Close database connection

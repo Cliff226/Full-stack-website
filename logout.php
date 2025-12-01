@@ -1,10 +1,14 @@
 <?php
+require_once 'dbConnections/security.php' ;
 
 require_once 'vendor/autoload.php';
 session_start(); // only once
 
 $loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader, ['cache' => false]);
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'autoescape' => 'html', // can be 'html', 'js', 'css', 'url', false
+]);
 
 // Unset all session variables
 $_SESSION = [];

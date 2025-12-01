@@ -1,88 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalRush</title>
-    <link rel="stylesheet" href="public/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
-        </nav>
-    </header>
-    <main class="main">
-        <div class="pageTitle" class="mb-4">
-            <h2>Blog </h2>
-            <h3> Articles for {{ leagueName }} <img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo"></h3>
-            <p>Browse through the latest articles and updates about the {{ leagueName}}.</p>
-        </div>
-        <div id="blog-articles-navigation">
-            <a href="/blog.php" class="btn btn-primary mb-3">Back to Blog Home</a>  
-            <div class="blog-articles-navigation" id="addPostButton">
-        <form action="blogArticles.php?league={{ leagueCode }}" method="get" class="d-inline">
-            <input type="hidden" name="league" value="{{ leagueCode }}">
-            <input type="submit" class="btn btn-primary mb-3" value="Refresh Articles">
-            <input type="text" name="search" placeholder="Search articles..." class="form-control d-inline-block w-auto mb-3">
-        </form>
-        <a href="createPost.php" class="btn btn-success mb-3">Add New Post</a>
-    </div>
-        </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for post in posts %}
-                    <tr>
-                        <td>{{ post.title }}</td>
-                        <td>{{ post.author }}</td>
-                        <td>{{ post.created_at }}</td>
-                        <td>
-                            <a href="edit.php?id={{ post.id }}" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="delete.php?id={{ post.id }}" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="4" class="text-center">No posts available.</td>
-                </tr>
-        </tbody>
-    </table>
-    <div class="addCommentSection" id="addCommentSection">
-        <form action="createComment.php?league={{ leagueCode }}" method="post">
-                <label for="content" class="form-label"></label>
-                <textarea class="form-control" id="content" name="content" rows="3" required placeholder= "Add a comment"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
-        </form>
-    </div>
+    {{ include('header.html.twig') }}
+    <body>
 
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+        <main class="main">
+            <div class="pageTitle" class="mb-4">
+                <h2>Blog Articles for</h2>
+                {# Show league name and logo #}
+                <h3>  {{ leagueName|e }} <img id='leagueCrest' src="{{ leagueCrest|e('html_attr') }}" alt="{{ leagueName|e }} logo"></h3>
+                <p>Browse through the latest articles and updates about the {{ leagueName|e}}.</p>            
+            </div>
+            {# Buttons for navigation and adding a new post #}
+            <div class=" undertilteButtons contaner" mt-5>
+                {# Back to home page #}
+                <a href="/index.php" class="btn btn-primary mb-3">Back Home</a> 
+                {# Link to create a new post for this league #}
+                <a href="createPost.php?league={{leagueCode|e}}" class="btn btn-success mb-3">Add New Post</a>
+            </div>
+            {# form for blog navigation not visible or league id #}
+            <div id="blog-articles-navigation"> 
+                <div class="blog-articles-navigation" id="addPostButton">
+                    <form action="blogArticles.php?league={{ leagueCode|e }}" method="get" class="d-inline">
+                        <input type="hidden" name="league" value="{{ leagueCode|e }}">
+                    </form>
+                </div>
+            </div>
+            <div class ="articleMain">
+                {# Check if there are no posts for this league #}
+                {% if posts is empty %}
+                    <div class= 'empty'>
+                        <p>No posts for this league yet.</p>
+                    </div>
+                {% else %}
+                    {# Loop through all posts for selected league #}
+                    {% for post in posts %}
+                    <a class="link-section-blog" href="fullArticle.php?articleId={{post.id|e}}">
+                        <div class="row g-0 post">
+                            <div class = "col sml-6 postContent">
+                                {# Post image #}
+                                <img class = "articleImage"src="{{post.image_path|e('html_attr') }}" alt="{{post.title|e }}">
+                            </div>
+                            {# Post title if image is found #}
+                            <div class = "col sml-6 postContent">
+                                {% if post.image_path %}
+                                    <h2>{{ post.title|e }}</h2> 
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </main>
         
-        
-        {# <section id="blog-articles">
-            {% for article in articles %}
-                <article class="blog-article">
-                    <h3>{{ article.title }}</h3>
-                    <p class="blog-date">{{ article.date|date("F j, Y") }}</p>
-                    <p class="blog-content">{{ article.content }}</p>
-                </article>
-            {% else %}
-                <p>No articles found.</p>
-            {% endfor %}
-        </section>                  #}
-    </main>
-    
-    <footer class = "footer">
-        <p>Copyright © 2025</p>
-    </footer>
-</body>
+        <footer class = "footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {# JavaScript variables passed from Twig #}
+        <script>
+            window.status = '{{ status|default('')|e('js') }}';
+            window.username = '{{ username|default('')|e('js') }}';
+            window.context = '{{ context|default('')|e('js') }}';
+        </script>
+        {# JavaScript file #}
+        <script src="public/js/modal.js"></script>
+
+        {% include 'searchScript.html.twig' %}
+    </body>
 </html>

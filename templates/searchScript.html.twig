@@ -1,0 +1,8 @@
+       
+{# file to pass values to if user is logged or if teh search team was not found and operate the modal  #}
+{% include 'indexModal.html.twig' %}
+<script>
+    const TEAM_NOT_FOUND = {{ teamNotfound|default(false)|json_encode|raw }};
+    const NOT_LOGGED_IN = {{ notLoggedIn|default(false)|json_encode|raw }};
+</script>  
+<script src="public/js/indexModal.js"></script>

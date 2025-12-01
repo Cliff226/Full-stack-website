@@ -1,7 +1,10 @@
 <?php
+require_once 'dbConnections/security.php' ;
+// Include dependencies
+require_once 'vendor/autoload.php';
 require_once 'dbConnections/almanacDatabaseConnection.php'; 
 
-$apiToken = '0c98b44563234432be112138964c7529';
+$apiToken = "0c98b44563234432be112138964c7529";
 
 $competitions = 'PL,PD,SA,BL1,FL1,CL,EL,ECL,WC,QCCF,QUFA,ESC'; 
 
@@ -26,11 +29,8 @@ $matches = $data['matches'] ?? [];
 
 if (empty($matches)) return;
 
-$sql = "
-INSERT INTO livematches 
-(match_id, competition, country, home_team, away_team, home_team_crest, away_team_crest, home_score, away_score, minute, kickoff)
-VALUES 
-(:match_id, :competition, :country, :home_team, :away_team, :home_team_crest, :away_team_crest, :home_score, :away_score, :minute, :kickoff)
+$sql = "INSERT INTO livematches (match_id, competition, country, home_team, away_team, home_team_crest, away_team_crest, home_score, away_score, minute, kickoff)
+VALUES (:match_id, :competition, :country, :home_team, :away_team, :home_team_crest, :away_team_crest, :home_score, :away_score, :minute, :kickoff)
 ON DUPLICATE KEY UPDATE
     competition = VALUES(competition),
     country = VALUES(country),
@@ -86,6 +86,4 @@ foreach ($matches as $match) {
         ':kickoff' => $kickoff
     ]);
 }
-//Close PDO connection
-$pdo = null;
 

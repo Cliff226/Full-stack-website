@@ -1,4 +1,5 @@
 <?php
+require_once 'dbConnections/security.php' ;
 require_once 'vendor/autoload.php';
 require_once 'dbConnections/almanacDatabaseConnection.php';
 
@@ -7,7 +8,13 @@ session_start();
 
 // Twig Setup
 $loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader);
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'autoescape' => 'html', // can be 'html', 'js', 'css', 'url', false
+]);
+
+//set user if logged in 
+$user =  $_SESSION['user'] ?? null;
 
 
 // Get selected league from GET
@@ -43,10 +50,8 @@ if ($selectedLeague !== '' && !in_array($selectedLeague, $leagues)) {
 // Fetch matches
 if ($selectedLeague !== '') {
     // Filter matches by selected league
-    $stmt = $pdo->prepare("
-        SELECT match_id, competition, country, home_team, away_team,
-               home_team_crest, away_team_crest, home_score, away_score,
-               minute, kickoff
+    $stmt = $pdo->prepare(" SELECT match_id, competition, country, home_team, away_team,home_team_crest, 
+        away_team_crest, home_score, away_score, minute, kickoff
         FROM livematches
         WHERE DATE(kickoff) = CURDATE()
         AND competition = :competition
@@ -55,10 +60,8 @@ if ($selectedLeague !== '') {
     $stmt->execute(['competition' => $selectedLeague]);
 } else {
     // Fetch all leagues
-    $stmt = $pdo->query("
-        SELECT match_id, competition, country, home_team, away_team,
-               home_team_crest, away_team_crest, home_score, away_score,
-               minute, kickoff
+    $stmt = $pdo->query(" SELECT match_id, competition, country, home_team, away_team, home_team_crest,
+        away_team_crest, home_score, away_score, minute, kickoff
         FROM livematches
         WHERE DATE(kickoff) = CURDATE()
         ORDER BY country ASC, competition ASC, kickoff ASC
@@ -102,7 +105,7 @@ echo $twig->render('liveScore.html.twig', [
     'groupedMatches' => $groupedMatches,
     'leagues' => $leagues,
     'selectedLeague' => $selectedLeague,
-    'user' => $_SESSION['user'] ?? null,
+    'user' => $user,
     'current_page' => 'LiveScore'
 ]);
 

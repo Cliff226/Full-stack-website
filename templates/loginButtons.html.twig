@@ -1,6 +1,6 @@
 <div id="userButtons" class="header-buttons">
     {% if user %}
-        <!-- Logout Button -->
+        {# Logout Button #}
         <form method="post" action="logout.php" class="inline-form">
             <button class="buttonIcon" type="submit">
                 <img src="public/icons/logout.png" alt="Logout Icon">
@@ -8,19 +8,25 @@
             </button>
         </form>
 
-        <!-- Delete Account Button -->
-        <form method="post" action="deleteAccount.php" class="inline-form">
+        {# Delete Account Button #}
+        <form method="post" action="Profile.php" class="inline-form">
             <button class="buttonIcon delete-btn" type="submit">
-                <img src="public/icons/trash.png" alt="Delete Icon">
-                Delete Account
+                <img src="public/icons/user.png" alt="Login Icon">
+                Your Profile
             </button>
         </form>
     {% else %}
-        <!-- Login Button -->
+        {# Login Button #}
         <form action="login.php" class="inline-form">
             <button class="buttonIcon login-btn" type="submit">
                 <img src="public/icons/user.png" alt="Login Icon">
                 Login
+            </button>
+        </form>
+        <form action="Register.php" class="inline-form">
+            <button class="buttonIcon login-btn" type="submit">
+                <img src="public/icons/user.png" alt="Login Icon">
+                Register
             </button>
         </form>
     {% endif %}

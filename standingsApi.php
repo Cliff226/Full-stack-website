@@ -1,14 +1,17 @@
 <?php
-require_once'dbConnections/standingsDatabaseConnection.php'; // adjust path
+require_once 'dbConnections/standingsDatabaseConnection.php';
 
-function updateStandings($leagueCode, $leagueId) {
+function updateStandings($leagueCode, $leagueId, $season = 2025) {
 
     global $pdo;
 
+    // Ensure UTF-8 connection
+    $pdo->exec("SET NAMES 'utf8mb4'");
+
     $apiToken = "0c98b44563234432be112138964c7529";
-    $season = 2025;
     $url = "https://api.football-data.org/v4/competitions/{$leagueCode}/standings";
 
+    // Fetch data from API
     $curl = curl_init();
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
@@ -23,22 +26,23 @@ function updateStandings($leagueCode, $leagueId) {
     curl_close($curl);
 
     if ($err) {
-        return "API error: $err";
+        error_log("Standings API error: $err");
+        return;
     }
 
     $data = json_decode($response, true);
     if (!isset($data['standings'][0]['table'])) {
-        return "No standings found in API response.";
+        error_log("No standings found in API response for league: $leagueCode");
+        return;
     }
 
     $standings = $data['standings'][0]['table'];
 
-    $stmt = $pdo->prepare("
-        INSERT INTO standings (
-            league_id, season, position, team_id, team_name, short_name, tla, crest,
+    // Prepare SQL with ON DUPLICATE KEY UPDATE
+    $stmt = $pdo->prepare("INSERT INTO standings 
+        (  league_id, season, position, team_id, team_name, short_name, tla, crest,
             played, won, draw_matches, lost, points, goals_for, goals_against, goal_diff, last_updated
-        )
-        VALUES (
+        ) VALUES (
             :league_id, :season, :position, :team_id, :team_name, :short_name, :tla, :crest,
             :played, :won, :draw_matches, :lost, :points, :goals_for, :goals_against, :goal_diff, NOW()
         )
@@ -56,23 +60,44 @@ function updateStandings($leagueCode, $leagueId) {
     ");
 
     foreach ($standings as $team) {
-        $stmt->execute([
+
+        // Sanitize & trim string values
+        $teamName   = trim($team['team']['name']);
+        $shortName  = isset($team['team']['shortName']) ? trim($team['team']['shortName']) : null;
+        $tla        = isset($team['team']['tla']) ? trim($team['team']['tla']) : null;
+        $crest      = isset($team['team']['crest']) ? trim($team['team']['crest']) : null;
+
+        // Cast integers to be safe
+        $position       = (int)$team['position'];
+        $teamId         = (int)$team['team']['id'];
+        $played         = (int)$team['playedGames'];
+        $won            = (int)$team['won'];
+        $drawMatches    = (int)$team['draw'];
+        $lost           = (int)$team['lost'];
+        $points         = (int)$team['points'];
+        $goalsFor       = (int)$team['goalsFor'];
+        $goalsAgainst   = (int)$team['goalsAgainst'];
+        $goalDiff       = (int)$team['goalDifference'];
+
+        if (!$stmt->execute([
             ':league_id'     => $leagueId,
             ':season'        => $season,
-            ':position'      => $team['position'],
-            ':team_id'       => $team['team']['id'],
-            ':team_name'     => trim($team['team']['name']),
-            ':short_name'    => $team['team']['shortName'] ?? null,
-            ':tla'           => $team['team']['tla'] ?? null,
-            ':crest'         => $team['team']['crest'] ?? null,
-            ':played'        => $team['playedGames'],
-            ':won'           => $team['won'],
-            ':draw_matches'  => $team['draw'],
-            ':lost'          => $team['lost'],
-            ':points'        => $team['points'],
-            ':goals_for'     => $team['goalsFor'],
-            ':goals_against' => $team['goalsAgainst'],
-            ':goal_diff'     => $team['goalDifference']
-        ]);
+            ':position'      => $position,
+            ':team_id'       => $teamId,
+            ':team_name'     => $teamName,
+            ':short_name'    => $shortName,
+            ':tla'           => $tla,
+            ':crest'         => $crest,
+            ':played'        => $played,
+            ':won'           => $won,
+            ':draw_matches'  => $drawMatches,
+            ':lost'          => $lost,
+            ':points'        => $points,
+            ':goals_for'     => $goalsFor,
+            ':goals_against' => $goalsAgainst,
+            ':goal_diff'     => $goalDiff
+        ])) {
+            error_log("Failed to insert/update standings for team: {$teamName}");
+        }
     }
 }

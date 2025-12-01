@@ -1,20 +1,22 @@
 <?php
+require_once 'dbConnections/security.php';
 require_once 'vendor/autoload.php';
-require_once 'dbConnections/usersDatabaseConnection.php'; // Must set $pdo = new PDO(...)
+require_once 'dbConnections/usersDatabaseConnection.php';
 
 session_start();
 
-// Redirect if already logged in
+// Twig setup
+$loader = new \Twig\Loader\FilesystemLoader('templates');
+$twig = new \Twig\Environment($loader, [
+    'cache' => false,
+    'autoescape' => 'html',
+]);
 
+// Redirect if already logged in
 if (isset($_SESSION['user'])) {
     header("Location: index.php");
     exit;
 }
-
-// Twig setup
-$loader = new \Twig\Loader\FilesystemLoader('templates');
-$twig = new \Twig\Environment($loader);
-
 
 // Initialise variables
 $errors = [];
@@ -24,67 +26,84 @@ $surname = '';
 $favorite_league = '';
 $user = null;
 
-
 // Handle POST login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = trim($_POST['emailLogin'] ?? '');
     $password = $_POST['passwordLogin'] ?? '';
+    $captcha_input = trim($_POST['captcha_input'] ?? '');
 
-    if (!$email || !$password) {
-        $errors[] = "Please enter both email and password.";
+    // CAPTCHA validation
+    if (!isset($_SESSION['captcha']) || strtolower($captcha_input) !== strtolower($_SESSION['captcha'])) {
+        $errors[] = "CAPTCHA is incorrect.";
         $status = 'error';
-    } else {
-        $stmt = $pdo->prepare("SELECT name, surname, email, dob, password, favorite_league FROM users WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-        // password_ve
-        if ($user && password_verify($password, $user['password'])) {
+    // Clear CAPTCHA
+    unset($_SESSION['captcha']);
 
-            // Login success — save session
-            $_SESSION['user'] = $user['email'];
-            $_SESSION['name'] = $user['name'];
+    // If no CAPTCHA errors
+    if (empty($errors)) {
 
-            $status = 'success';
-            $username = $user['name'] ?? '';
-            $surname = $user['surname'] ?? '';
-            $favorite_league = $user['favorite_league'] ?? '';
-
-
-            // Secure cookie
-            $userData = [
-                'name' => $username,
-                'surname' => $surname,
-                'favorite_league' => $favorite_league 
-            ];
-            setcookie(
-                "userData",
-                json_encode($userData),
-                time() + 7200 ,  // 2 hours 
-                "/",            // available site-wide
-                "",             // default domain canh be used on all subdomains
-                false,          // secure=false for HTTP, true for HTTPS only 
-                true            // HttpOnly is true to prevent JS access
-            );
+        if (!$email || !$password) {
+            $errors[] = "Please enter both email and password.";
+            $status = 'error';
 
         } else {
-            $errors[] = "Invalid email or password.";
-            $status = 'error';
+
+            $stmt = $pdo->prepare("
+                SELECT name, surname, email, dob, password, favorite_league 
+                FROM users 
+                WHERE email = :email
+            ");
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Validate password
+            if ($user && password_verify($password, $user['password'])) {
+
+                // Store session
+                $_SESSION['user'] = $user['email'];
+                $_SESSION['name'] = $user['name'];
+
+                $status = 'success';
+                $username = $user['name'];
+                $surname = $user['surname'];
+                $favorite_league = $user['favorite_league'];
+
+                // Store cookie
+                $userData = [
+                    'name' => $username,
+                    'surname' => $surname,
+                    'favorite_league' => $favorite_league
+                ];
+
+                setcookie(
+                    "userData",
+                    json_encode($userData),
+                    time() + 7200,
+                    "/",
+                    "",
+                    false,
+                    true
+                );
+
+            } else {
+                $errors[] = "Invalid email or password.";
+                $status = 'error';
+            }
         }
     }
 }
 
 // Render Twig template
-
 echo $twig->render('login.html.twig', [
-    'status' => $status,               // success / error for modal
-    'errors' => $errors,               // display login errors
-    'username' => $username,     
-    'surname' => $surname,           
-    'favorite_league' => $favorite_league, 
-    'context' => 'login' // for modal display
+    'status' => $status,
+    'errors' => $errors,
+    'username' => $username,
+    'surname' => $surname,
+    'favorite_league' => $favorite_league,
+    'context' => 'login'
 ]);
 
-//Close PDO connection
-$pdo = null;
+$pdo = null; // Close DB

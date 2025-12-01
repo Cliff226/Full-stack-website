@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalRush</title>
-    <link rel="stylesheet" href="public/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
-        </nav>
-    </header>
-    <main class = "main">
-        <div  id="standingsContainer">
-            <h1 class="mt-4">
-                {{ leagueName }} 
-                <img id='leagueCrest' src="{{ leagueCrest }}" alt="{{ leagueName }} logo">
-                Standings
-            <h1>
+    {{ include('header.html.twig') }}
+    <body>
 
-            <table class="table table-striped table-dark table-hover mt-4">
-                <tr>
-                    <th>#</th>
-                    <th>Team</th>
-                    <th>P</th>
-                    <th>W</th>
-                    <th>D</th>
-                    <th>L</th>
-                    <th>Pts</th>
-                    <th>GF</th>
-                    <th>GA</th>
-                    <th>GD</th>
-                </tr>
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+        <main class = "main">
+            <div  id="standingsContainer" class = "tableContainer" >
+                <h1 Class="pageTitle" class="mt-4">
+                    <img id='leagueCrest' src="{{ leagueCrest|e('html_attr')}}" alt="{{ leagueName|e }} logo">
+                    {{ leagueName|e }} Standings
+                <h1>
 
-                {% for team in standings %}
-                <tr>
-                    <td>{{ team.position }}</td>
-                    <td><img class="scoreteamCrest" src="{{ team.crest }}" alt="logo"> {{ team.team_name }}</td>
-                    <td>{{ team.played }}</td>
-                    <td>{{ team.won }}</td>
-                    <td>{{ team.draw_matches }}</td>
-                    <td>{{ team.lost }}</td>
-                    <td>{{ team.points }}</td>
-                    <td>{{ team.goals_for }}</td>
-                    <td>{{ team.goals_against }}</td>
-                    <td>{{ team.goal_diff }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </main>
-    <footer class = "footer">
-        <p>Copyright © 2025</p>
-    </footer>
-</body>
+                <table class="table table-striped table-dark table-hover mt-4">
+                    <tr>
+                        <th>#</th>
+                        <th>Team</th>
+                        <th>P</th>
+                        <th>W</th>
+                        <th>D</th>
+                        <th>L</th>
+                        <th>Pts</th>
+                        <th>GF</th>
+                        <th>GA</th>
+                        <th>GD</th>
+                    </tr>
+
+                    {% for team in standings %}
+                    <tr>
+                        <td>{{ team.position|e }}</td>
+                        <td><img class="scoreteamCrest" src="{{ team.crest|e('html_attr')}}" alt="logo"> {{ team.team_name|e }}</td>
+                        <td>{{ team.played|e }}</td>
+                        <td>{{ team.won|e }}</td>
+                        <td>{{ team.draw_matches|e }}</td>
+                        <td>{{ team.lost|e }}</td>
+                        <td>{{ team.points|e }}</td>
+                        <td>{{ team.goals_for|e }}</td>
+                        <td>{{ team.goals_against|e }}</td>
+                        <td>{{ team.goal_diff|e }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </main>
+        <footer class="footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {% include 'searchScript.html.twig' %}
+    </body>
 </html>

@@ -1,95 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalRush</title>
-    <link rel="stylesheet" href="public/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
-        </nav>
-    </header>
-    <main>
-        <div id="Welcome-section" class="welcome-section">
-            <img src="public/images/San-siro.jpg" alt="Stadium Image" class="stadium-image">
-            <div class="banner">
-                <h1>Welcome to GoalRush {{ userData.name|upper }} {{ userData.surname|upper }}</h1>
+    {{ include('header.html.twig') }}
+    <body>
 
-                <p>
-                    Your ultimate destination for live football scores and news.
-                    {% if userData is defined and userData.favorite_league %}
-                        Stay up to date with the latest from your favorite league: {{ userData.favorite_league|upper }}!
-                    {% else %}
-                        Discover scores, news, and updates from all leagues worldwide.
-                    {% endif %}
-                </p>
-                <a id="scrolldownlink" scrolldown href="#features-section">Explore</a>
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+        <main class="home">
+            <div class="home">
+                <div class="banner">
+                    <h1>Welcome to GoalRush {{ userData.name|upper }}</h1>
+
+                    <p>
+                        Your ultimate destination for live football scores and news.
+                        {% if userData is defined and userData.favorite_league %}
+                            Stay up to date with the latest from your favorite league: {{ userData.favorite_league|upper }}!
+                        {% else %}
+                            Discover scores, news, and updates from all leagues worldwide.
+                        {% endif %}
+                    </p>
+                    <a id="scrolldownlink" class="homebtn btn-primary"  scrolldown href="#intro">Explore</a>
+                </div>
             </div>
-        </div>
-        <div>
-            <div class="row g-0">
+            <div class="row g-0 intro">
                 <div class="col sml-6">
-                    <img class="side-image" src="public/images/stadium.jpg" alt="background image of a football stadium">
+                    <div id="carouselExampleFade" class="carousel slide carousel-fade">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <a class ="link-section-ancor" href="/liveScore.php">
+                                    <img class=" d-block link-section-img" src="public/images/kick.jpg" alt="kick image">
+                                    <h3>Live Scores</h3>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a class ="link-section-ancor" href="/blog.php">
+                                    <img class="link-section-img" src="public/images/championsball.jpg" alt="ball image">
+                                    <h3>Blog</h3>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                {% if user %}
+                                    <a class ="link-section-ancor" href="/profile.php">
+                                        <img class="link-section-img" src="public/images/stadium.jpg" alt="net image">
+                                        <h3>Your profile</h3>
+                                    </a>
+                                {% else %}
+                                    <a class ="link-section-ancor" href="/login.php">
+                                        <img class="link-section-img" src="public/images/stadium.jpg" alt="net image">
+                                        <h3>Login</h3>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                 </div>
                 <div id = "intro" class="col sml-6">
-                    <div class="intro-textTitle">
-                        <h2>Get Started</h2>
+                    {% if user %}
+                {# Logged-in content #}
+                <div class="text-center p-6 bg-green-100 rounded-xl shadow">
+                    <h2 class="text-2xl font-bold mb-3">Welcome Back!</h2>
+                    <p class="text-gray-700 mb-5">
+                        New posts are live — explore the latest blogs and share your thoughts.
+                    </p>
+                    <div class="btn-group buttonsindex" role="group" aria-label="Basic mixed styles example">
+                        <a href="blog.php" class= "btn btn-primary">Read Blogs</a>
+                        <a href="profile.php" class= "btn btn-primary">Your Profile</a>
                     </div>
-                    <div class="intro-text">
-                        <p>login or register to personalize your experience,
-                         follow your favorite teams, and stay updated with the 
-                         latest football action
+                </div>
+            {% else %}
+                {# Guest content #}
+                <div class="text-center p-6 bg-gray-100 rounded-xl shadow">
+                    <h2 class="text-2xl font-bold mb-3">Unlock Exclusive Content</h2>
+                    <p class="text-gray-600 mb-5">
+                        <p>"Become part of
+                         the GoalRush community.
+                         Create an account
+                         or log in
+                         to access our blogs and 
+                         engage with other fans."
                         </p>
-                    </div>                
-                </div>
-            </div>
-        </div>
-        <div class="row g-0" id="features-section">
-            <div class="col sml-3">
-                <div class="feature-icon">
-                    <div class="link-section">
-                        <a class ="link-section-ancor" href="/liveScore.php">
-                            <img class="link-section-img" src="public/images/kick.jpg" alt="kick image">
-                            <h3>Live Scores</h3>
-                        </a>
+                    </p>
+                    <div class="btn-group buttonsindex" role="group" aria-label="Basic mixed styles example">
+                        <a href="register.php" class="btn btn-primary">Register</a>
+                        <a href="login.php" class="btn btn-primary">Log In</a>
                     </div>
                 </div>
-            </div>
-            <div class="col sml-3">
-                <div class="feature-icon">
-                    <div class="link-section">
-                        <a class ="link-section-ancor" href="/blog.php">
-                            <img class="link-section-img" src="public/images/championsball.jpg" alt="ball image">
-                            <h3>Blog</h3>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col sml-3">
-                <div class="feature-icon">
-                    <div class="link-section">
-                        <a class ="link-section-ancor" href="/News.php">
-                            <img class="link-section-img" src="public/images/net.jpg" alt="net image">
-                            <h3>News</h3>
-                       </a>
-                    </div>
-                </div>
-            </div>                              
-        </div>
-    </main>
-    <footer class = "footer">
-        <p>Copyright © 2025</p>
-    </footer>
-        {% include 'indexModal.html.twig' %}
-        <script> 
-            const TEAM_NOT_FOUND = {{ teamNotfound ? 'true' : 'false' }}; 
-            const NOT_LOGGED_IN = {{ notLoggedIn ? 'true' : 'false' }};  
-        </script>     
-        <script src="public/js/indexModal.js"></script>
-</body>
+            {% endif %}
+        </main>
+        <footer class="footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {% include 'searchScript.html.twig' %}
+    </body>
 </html>

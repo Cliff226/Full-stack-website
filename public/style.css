@@ -1,79 +1,129 @@
-
- body{
+body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   color: rgb(15, 15, 15);
-  background-image: url(css-background/background2.jpg);
-  background-size: cover;
-  background-attachment: fixed;
+  background-color: rgb(230, 230, 230);
   display: grid;
-  padding-bottom: 100px; 
-} 
-.main 
-{
-  flex: 1;
-  margin-top: 120px;
+  padding-bottom: 100px;
 }
 
-
-/* welcome div */
-.welcome-section {
-  position: relative;      
-  width: 100%;      
-  overflow: hidden;
+/* HERO SECTION */
+.home {
+  height: 100vh;
+  background: url("css-background/background2.jpg") center/cover no-repeat;
+  position: relative;
 }
 
-.stadium-image {
-  margin-top: 40px;
+.home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;  
-  filter: brightness(.6);  
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2));
 }
 
 .banner {
   position: absolute;
-  width: 110%;
-  top: 55%;               
-  left: 50%;                 
-  transform: translate(-50%, -50%); 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
-  text-size-adjust: auto;
-  color: rgb(0, 0, 0);
-  padding: 20px 40px;
-  background-color: #588b8b;
+  color: white;
+  max-width: 800px;
 }
+
+.banner h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-shadow: 0 5px 25px rgba(0,0,0,0.4);
+}
+
+.bannerp {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+.homebtn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #000000;
+  color: white;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: 0.3s ease;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+
+.homebtn:hover {
+  background: #000000;
+  transform: translateY(-3px);
+}
+
+
+/* CONTENT SECTION */
+.content {
+  padding: 60px 10%;
+}
+
+.content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.content p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .overlay h1 {
+    font-size: 2.2rem;
+  }
+
+  .overlay p {
+    font-size: 1rem;
+  }
+}
+
+
+.main 
+{
+  flex: 1;
+  margin-top: 80px;
+}
+
+
 .side-image{
-  width: 100%;
+  width: 95%;
   height: auto;
   display: block;
   object-fit: cover;  
   filter: brightness(.6);  
 }
-#intro {
-  color: rgb(0, 0, 0);
-  font-size: 100%;
-  background-color: #588b8b;            
-  display: flex;
-  flex-direction: column;        
-  justify-content: space-between;
-  text-justify: justify;  
-  padding: 1%;
+.intro {
+  color: rgb(230, 224, 215);
+  background-color: #0a0927;            
+  padding-bottom : 90px;
   text-decoration:bold;           
 }
 @media (min-width: 768px) {
   #intro {
   font-size: x-large;
-  color: rgb(0, 0, 0);
-  background-color: #588b8b;            
+  color: rgb(230, 224, 215);
+  background-color: #0a0927;            
   display: flex;
   flex-direction: column;        
   justify-content: space-between;
   text-justify: justify;  
+  justify-content: flex-start;
   padding: 5%;
   text-decoration:bold; 
-  text-shadow:#222         
+  text-shadow:#0a0927         
 } 
 
 }
@@ -89,32 +139,36 @@
   margin: 0 0 -15px 0;
 }
 #searchedTeamInfo{
-  margin-top: 5%;
-  background-color: #588b8b;
+  background-color: #0a0927;
   padding: 20px;
-  color: black;
+  color: #c4132a;
   font-size: medium;
+  width: 90%;
+    margin: -40px 5% 0 5%;
+    border-radius: 0 0 15px 15px;
 }
 
 
 /* Table styling */
-#Trophies.table
+table
  {
   width: 100%;
   border-collapse: collapse;
   margin-top: 5%;
-  background: rgba(255, 255, 255, 0.05);
+  background: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 25px rgba(0,0,0,0.2);
   border-radius: 15px ;
+  overflow: hidden;
+
 }
 
 #Trophies th,  
 #Trophies td {
   padding: 12px 10px;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid #ebebeb;
   color: white;
   font-weight: bold;
   text-shadow:
@@ -125,11 +179,13 @@
 } 
 
 th {
-   background: #333333; 
+   background: #0a0923a1; 
    font-size: medium;
   }
 td { 
-  font-size: 14px; 
+  font-size: 14px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee; 
 }
 tr:hover { 
   background: rgba(7, 4, 4, 0.15);
@@ -141,7 +197,7 @@ tr:hover {
 }
 
 #searchButton{
-  background-color: #c8553d; 
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d); 
     color: white;   
     border: 1px solid white;  
     border-radius: 15px; 
@@ -154,48 +210,84 @@ tr:hover {
 
 
 .buttonIcon img {
-  width: 5%;
+  width: 20px;
 }
 .buttonIcon {
+  width: 90%;
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 5px;
   font-size: 14px;
   text-decoration: none;
-  background-color: #c8553d;
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
 }
-#scrolldownlink {
+.linkButton {
+  max-height: 250px;
   display: inline-block;
   margin-top: 10px;
   padding: 5px 20px;
   border: 2px solid white;
-  background-color: #c8553d;
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d);
   color: white;
   text-decoration: none;
   border-radius: 25px;
 }
 
-#scrolldownlink:hover {
-  background-color: #a6442a;
+
+.empty{
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d);
+  color: #0a0927;
+  margin: 5%;
+  border: solid 2px white;
+  font-size: large;
+  padding: 5%;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-style: oblique;
+
+}
+.linkButton {
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d);
   color: burlywood;
   border: 2px solid burlywood;
 }
 
+a {
+  text-decoration: none !important;
+  color: whitesmoke !important;
+}
+
+a:hover{
+  color: #740606;
+  font-weight: 900 ;
+  font-style: oblique;
+  
+}
+.user-post,
+.user-comment
+{
+  border: 2px solid white;
+  margin: 2%;
+  padding: 5%;
+  border-radius: 30px;
+}
 /* navigation */
 .custom-navbar {
-  background-color: #588b8b !important;
-      flex-wrap:nowrap !important;
+  background-color: #0a0927 !important;
+  flex-wrap:nowrap !important;
+  border-bottom: solid #c4132a !important;
 
 }
 
 .custom-navbar .offcanvas, 
 .custom-navbar .offcanvas-header {
-  background-color: #588b8b !important;
+  background-color: #0a0927 !important;
 }
 
 .custom-navbar .nav-link,
@@ -204,7 +296,7 @@ tr:hover {
   color: white !important;
 }
 .navbar-nav .dropdown-menu {
-  background-color: #c8553d;
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d);
 
 }
 .side-image{
@@ -213,7 +305,6 @@ tr:hover {
   display: block;
   object-fit: cover;  
   filter: brightness(.6);  
-  margin: 5%;
 }
 .feature-icon{
   height: auto;
@@ -228,40 +319,47 @@ tr:hover {
   flex-direction: column;
   align-items: center;
   margin: 5%;
-  background-color: #588b8b94;
+  background-color: #0a0927;
   border: solid white 2px;
   text-decoration: none;
   color: white;
   border-radius: 10px;  
   margin-bottom: 10px;
   border-radius: 15px;
+  padding: 10px;
+}
+
+#blogLeagueContainer :hover,
+.buttonIcon button :hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
 }
 
 
+
+.carusel-item active{
+  background-color: #a5a4a41a;
+  padding: 2%;
+  border-radius: 15px;
+}
 
 .link-section-ancor{
   font-size: medium;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10%;
-  background-color: #588b8b;
-  border: solid white 2px;
   text-decoration: none;
-  color: white;
-  border-radius: 10px;  
-  margin-bottom: 10px;
-  border-radius: 15px;
+  color: white; 
+  background-color: #0a0927;
 }
+
 .link-section-img {
-  display: flex ;
-  align-items: center;
+  max-height: 300px;
   width: 70%;
-  display: block;
   object-fit: cover; 
   margin: 5% 0 5% 0;
   border-radius: 15px;
-  border: solid white 2px;
+
 }
 
  #blogLeaguesRow {
@@ -274,22 +372,34 @@ img.link-section-blog{
   padding: 5%;
   border-radius: 10px;
   background-color: white;
-  margin: 10%
+  margin: 10%;
+
+}
+.link-section-blog{
+    text-decoration: none;
+
 }
 
 .pageTitle{
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  text-align: center;
+  margin: 5%;
   text-align: center;
   margin-bottom: 30px;
-  background-color: #222;
-  color: #c8553d;
+  background-color: #0a0927;
+  color: #c4132a;
   padding: 15px;
   border-radius: 10px;
   font-style: oblique;
+  flex-direction: column;
 }
 
 #features-section {
-  margin-bottom: 50px;
-  background-color: #333333;
+  margin: 2% 5% 2% 5%;
+  background-color: #0a0927;
+  border-radius: 25px;
 }
 
 /* Forms */
@@ -355,10 +465,18 @@ label {
   }
 
 /* liveScore page */
-#livescoreButtons {
-  background-color: #588b8b;
+.undertilteButtons {
+  background-color: #0a0927;
   padding: 20px;
   border-radius: 10px;
+  margin: -60px 5% 0 5%;
+  display: flex;
+  justify-content: space-between;
+}
+.tilteButtons{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Buttons */
@@ -375,17 +493,17 @@ button {
 }
 button:hover { 
 
-  color: rgb(0, 0, 0); 
+  color: rgb(230, 224, 215); 
 }
 button:active { 
-  background: rgb(173, 87, 7); 
+  background: #740606; 
 }
 
 button.teamSelection { width: 100%; font-size: unset; }
 
 .leagueSelect button.active {
-  background-color: rgb(173, 87, 7);
-  color: rgb(0, 0, 0);
+  background-color: #740606;
+  color: rgb(230, 224, 215);
   border-color: #fcfdfd;
 }
 form.leagueSelect,
@@ -394,16 +512,21 @@ form.clubSelect {
 }
 
 #country-section{
-  background-color: #588b8b98;
+  background-color: #ffffff87;
   color: black;
   margin-top: 20px;
   margin-bottom: 20px;
   text-size-adjust: 15px;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 .livescoreForm {
   display: inline;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .livescoreForm button,
@@ -421,16 +544,20 @@ form.clubSelect {
   border: solid;
   border-radius: 15px;
   padding: 10px;
-  margin: 15px;
+  margin: 2% 5% 2% 5% ;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   color: #fff;
   align-items: center;
-  gap: 20px;
   transition: transform 0.2s ease-in-out;
+  width: 90%;
 }
 img.websitelogo { 
   width: 15%; 
   border-radius: 10px; 
+}
+.tableDisplay{
+  width: 90%;
+  border: solid rgb(124, 1, 1);
 }
 
 .club-logo, .logo {
@@ -440,6 +567,7 @@ img.websitelogo {
   background: #fff;
   border-radius: 10px;
   padding: 5px;
+  margin: 5%;
 }
 .clubName-text-text {
   background-clip: text;
@@ -453,8 +581,11 @@ img.websitelogo {
   margin-top: 10% !important;
  
 }
-#standingsContainer{
-  background-color: #588b8b98;
+.tableContainer{
+  background: linear-gradient(90deg, #EBF4F5, #B5C6E0);
+  padding: 5%;
+  border-radius: 25px;
+  margin: 2%;
 }
 
 #leagueCrest{
@@ -464,16 +595,19 @@ img.websitelogo {
     padding: 2px;
     border-radius: 5px;
 }
-#standingsContainer{
+.tableContainer{
   padding: 20px;
   font-size: small;
 }
 
 @media (max-width: 767px) {
-    #standingsContainer td,th {
-      font-size: small !important;
+    .tableContainer td,th {
+      font-size: xx-small !important;
       align-items: center;
       padding: 5px !important;
+      background: #0a0923a1;
+      color: white;
+      padding: 15px;
     }
 
       .link-section p,h3 {
@@ -487,32 +621,34 @@ img.websitelogo {
 
  @media (min-width: 768px) {
     #registrationForm{
-    border-radius: 15px 0 0 15px !important;
+    border-radius: 25px 0 0 25px !important;
     }
     .WelcomeContainer
   {
-    border-radius: 0 15px 15px 0 !important;
+    border-radius: 0 25px 25px 0 !important;
   }
 
 }
 #registrationForm{
-  background-color: #588b8b98;
+  background-color: #0604451f;
   padding : 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 0 0 15px 15px;
+  border-radius: 0 0 25px 25px;
 }
-#signinform
-{
-  margin-bottom: 50px !important;
+ 
+.userFill{
+   box-shadow: 0px 6px 15px rgb(0 1 26);
+   background-color: transparent;
+   border-radius: 25px;
 }
 
 .WelcomeContainer
 {
   font-size: x-large;
-  color: rgb(0, 0, 0);
-  background-color: #588b8b;
+  color: rgb(230, 224, 215);
+  background-color: #0a0927;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -523,14 +659,96 @@ img.websitelogo {
   border-radius: 15px 15px 0 0;
 }
 .loginButtons{
-   background-color: #c8553d; 
-    color: white;   
-    border: 1px solid white;  
-    border-radius: 30px; 
-    padding: 10px 20px;  
-    cursor: pointer;  
-    font-size: small !important;    
-    width: inherit; 
+  Background-image: linear-gradient(90deg, #8c1a17, #cd122d); 
+  color: white;   
+  border: 1px solid white;  
+  border-radius: 30px; 
+  padding: 10px 20px;  
+  cursor: pointer;  
+  font-size: small !important;    
+  width: inherit; 
+}
+
+.CreatePostForm{
+  background-color: #0a0927;
+  color: #fff;
+  padding: 20px;
+  margin: 2% 10% 0 10%;
+  border-radius: 15px;
+}
+.postContent{
+  margin: 5%;
+}
+
+.btn-primary{
+  background-color: #c4132a !important;
+}
+.btn-success{
+  background-color: #c4132a !important;
+}
+
+.buttonsindex{
+  padding: 20px;
+
+}
+.post{
+  background-color: #0a0927;
+  color: #ccc;
+  display: flex;
+  align-content: center;
+  padding-bottom: 20px;
+  border: solid white;
+  align-items: center;
+}
+.articleImage{
+  width: 50%;
+}
+#blog-articles-navigation{
+  display: flex;
+  justify-content: space-between;
+  margin: 2%;
+} 
+.addCommentSection{
+  margin-top: 0%;
+  padding: 2%;
+  background-color: #0604451f;
+  margin-bottom: 5%;
+  color: #c4132a;
+}
+.articleMain{
+  margin: 5%;
+}
+.allArticlesMain{
+  display: flex;
+  align-content: center;
+
+}
+
+.CommentSection{
+  margin-top: 0%;
+  padding: 2%;
+  background-color: #0604451f;
+  margin-bottom: 5%;
+  color:#c4132a;
+}
+
+.CommentSection p{
+  color: #ffffff;
+}
+
+.post{
+  padding: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+.profile{
+  background-color: #0a0927;
+  color: #ebebeb;
+  margin: 2% 5% 0 5%;
+  padding: 5%;
+  border:solid white;
+  border-radius: 20px;
 }
 
 
@@ -539,7 +757,7 @@ footer {
   text-align: center;
   margin-top: 20px;
   padding: 15px;
-  background: #222;
+  background: #0a0927;
   color: #fff;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -548,11 +766,13 @@ footer {
   left: 0;
   width: 100%;
   z-index: 100;
+  border-top: solid #740606;
 }
 /* Responsive Design for club and league selection*/
 /* Sidebar styling */
 .sidebar {
-    background: #222;
+    background: #0a0927;
     color: white;
     padding: 10px;
 }
+

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{ include('header.html.twig') }}
+    <body>
+
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="pageTitle" class="mb-4">
+                <a href="/blogArticles.php?league={{post.league_code|e}}" class="btn btn-primary mb-3">Back to {{leagueName|e}} Blog</a> 
+                <h2>Article By {{post.author_name|e}}</h2>
+            </div>
+            <div class ="articleMain">
+                {% if post is empty %}
+                    <p>No posts for this league yet.</p>
+                {% else %}
+                    <div class="row g-0 post">
+                        <div class = "col sml-6 postContent">
+                            <h2>{{ post.title|e }}</h2>
+                        </div>
+                        <div class = "col sml-6 postContent">
+                        {% if post.image_path %}
+                            <img class = "articleImage"src="{{ post.image_path|e('html_attr') }}" alt="{{ post.title|e }}">
+                        {% endif %}
+                    </div> 
+                    <div>
+                    <div class ="row g-0">
+                        <div class = " col sml-6 postContent">
+                            <p>{{ post.content|e }}</p><br>
+                            <p>By {{ post.author_name|e }} on {{ post.created_at|date("Y-m-d H:i")|e }}</p>
+                        </div>
+                    </div>
+                    {# display comments #}
+                    <div class='CommentSection'>
+                        <h2>Comments</h2>
+                        {% if comments is empty %}
+                            <p>No comments yet. Be the first to comment!</p>
+                        {% else %}
+                            {% for comment in comments %}
+                                <div class="comment">
+                                    <p><strong>{{ comment.author_name|e }}</strong> on {{ comment.created_at|date("Y-m-d H:i")|e }}</p>
+                                    <p>{{ comment.Comment_content|e }}</p>
+                                    <hr>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    {# enter a comment section #}
+                    <div class='addCommentSection'>
+                        <h3>Leave a Comment</h3>
+                        {% if error %}
+                            <p>{{ error|e }}</p>
+                        {% endif %}
+                        {% if success %}
+                            <p>{{ success|e }}</p>
+                        {% endif %}
+                        
+                        <form method="post" action="">
+                            <textarea class="form-control" name="comment_text" placeholder="Your Comment" required></textarea><br>
+                            <button class="btn btn-primary" type="submit">Submit Comment</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+        
+        <footer class="footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {% include 'searchScript.html.twig' %}
+    </body>
+</html>

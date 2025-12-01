@@ -6,16 +6,20 @@
       <div class="modal-header">
         <h5 class="modal-title">
           {% if context == 'login' %}
-            Login Successful
+              Login Successful
+          {% elseif context == 'postCreated' %}
+              Post Created
           {% else %}
-            Registration Successful
+              Registration Successful
           {% endif %}
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         {% if context == 'login' %}
-          Welcome back {{username}}!
+          Welcome back {{username|e}}!
+        {% elseif context == 'postCreated' %}
+          Your post will be displayed on our website.
         {% else %}
           Welcome! Your account has been created.
         {% endif %}
@@ -32,6 +36,8 @@
         <h5 class="modal-title">
           {% if context == 'login' %}
             Login Failed
+          {% elseif context == 'postCreated' %}
+              Post Created Failed
           {% else %}
             Registration Failed
           {% endif %}
@@ -42,7 +48,7 @@
         {% if errors %}
             <ul>
                 {% for error in errors %}
-                    <li>{{ error }}</li>
+                    <li>{{ error|e }}</li>
                 {% endfor %}
             </ul>
         {% else %}

@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoalRush</title>
-    <link rel="stylesheet" href="public/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
-        </nav>
-    </header>
-    <main class="main">
-        <div class="pageTitle" id="blogContainer">
-             <h1 class="mt-4">Blog</h1>
-            <p>Welcome to the GoalRush blog! Explore articles and updates from various football leagues around the world. Click on a league logo to read more.</p>
-        </div>
-        <div class="row" id="blogLeaguesRow">
-            {% for league in leagues %}
-                <div class="col-12 col-md-4 mt-4" id="blogLeagueContainer">
-                    <div class="blog-icon">
-                        <div class="link-section-blog text-center">
-                            <a class="link-section-blog" href="blogArticles.php?league={{ league.code }}">
-                                <img class="link-section-blog" src="{{ league.crest }}" alt="{{ league.name }} Logo">
-                            </a>
-                            <h3>{{ league.name }}</h3>
+    {{ include('header.html.twig') }}
+    <body>
+
+        <header class="header">
+            <nav>
+                {# Include navigation template #}
+                {{ include('navigation.html.twig') }}
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="pageTitle" id="blogContainer">
+                <div>
+                <h1 class="col-sml-3 ">Blog</h1>
+                <p>Welcome to the GoalRush blog! Explore articles and updates from various football leagues around the world. Click on a league logo to read more.</p>
+                </div>
+            </div>
+            {# Back Home button #}
+            <div class=" col-sml-3  undertilteButtons contaner" mt-5>
+                <a href="/index.php" class="btn btn-primary mb-3">Back Home</a>
+            </div>
+            {# displaying football leagues #}
+            <div class="row" id="blogLeaguesRow">
+                {% for league in leagues %}
+                    <div class="col-12 col-md-4 mt-4" id="blogLeagueContainer">
+                        <div class="blog-icon">
+                            <div class="link-section-blog text-center">
+                                {# Link to league articles#}
+                                <a class="link-section-blog" href="blogArticles.php?league={{ league.code|e }}">
+                                    {# League logo #}
+                                    <img class="link-section-blog" src="{{ league.crest|e('html_attr') }}" alt="{{ league.name|e }} Logo">
+                                </a>
+                                {# League name #}
+                                <h3>{{ league.name|e }}</h3>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    </main>
-    <footer class = "footer">
-        <p>Copyright © 2025</p>
-    </footer>
-</body>
+                {% endfor %}
+            </div>
+        </main>
+        <footer class="footer mt-4">
+            <p>Copyright © 2025</p>
+        </footer>
+        {% include 'searchScript.html.twig' %}
+    </body>
 </html>

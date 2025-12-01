@@ -1,60 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>GoalRush</title>
-      <link rel="stylesheet" href="public/style.css">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  </head>
+  {{ include('header.html.twig') }}
   <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <header class = "header">
-        <nav> 
-            {{ include('navigation.html.twig') }}     
+    <header class="header">
+        <nav>
+            <!-- Include navigation template -->
+            {{ include('navigation.html.twig') }}
         </nav>
     </header>
-    <div class="container mt-5" id="registrationContainer">
-      <form class="signinform" method="POST" action="login.php">
-        <div class="row g-0">
-          <!-- login form on the left Column bottom on mobile -->
-          <div class="col-md-6 order-md-1 order-2" id="registrationForm">
-            <h1>Login</h1>
-            <input type="email" id="inputEmail" name="emailLogin" class="form-control mb-3" placeholder="Email @example.com">
-            <input type="password" id="inputPassword" class="form-control mb-2 toggle-password" name="passwordLogin" placeholder="Password" /> 
-            <!-- Show and hide password button -->
-            <button type="button" id='loginShowPasswordButton' class="loginButtons toggle-password-btn" data-target="inputPassword">
-                Show Password
-            </button>
-            <!-- Login button -->
-            <button class="loginButtons mt-3" type="submit">Login</button>
-          </div>
-            <!-- welcome div on the right and in bottom in mobile -->
-          <div class="col-md-6 order-md-2 order-1">
-            <div class="WelcomeContainer p-3">
-              <h1>Welcome Back!</h1>
-              <p>Enter your Email and Password to access your account</p>
-              <p>OR</p>
-              <p>Press Sign In to register</p>
-              <a href="register.php">
-                  <button class="loginButtons mt-2" type="button">Register</button>
-              </a>
+    <main class='main'>
+      <div class="container mt-5" id="registrationContainer">
+        <form class="signinform" method="POST" action="login.php">
+          <div class=" userFill row g-0">
+            {# login form on the left Column bottom on mobile #}
+            <div class="col-md-6 order-md-1 order-2" id="registrationForm">
+              <h1>Login</h1>
+              <input type="email" id="inputEmail" name="emailLogin" class="form-control mb-3" placeholder="Email @example.com">
+              <input type="password" id="inputPassword" class="form-control mb-2 toggle-password" name="passwordLogin" placeholder="Password" /> 
+              {# Show and hide password button #}
+              <button type="button" id='loginShowPasswordButton' class="loginButtons toggle-password-btn" data-target="inputPassword">
+              Show Password
+              </button>
+              {# CAPTCHA Image and Input #}
+              <img src="../captcha.php" alt="CAPTCHA Image">
+              <input type="text" class="form-control mt-2" name="captcha_input" placeholder="Enter CAPTCHA" required>
+              {# Login button #}
+              <button class="loginButtons mt-3" type="submit">Login</button>
+            </div>
+              {# welcome div on the right and in bottom in mobile #}
+            <div class="col-md-6 order-md-2 order-1">
+              <div class="WelcomeContainer p-3">
+                <h1>Welcome Back!</h1>
+                <p>Enter your Email and Password to access your account</p>
+                <p>OR</p>
+                <p>Press Sign In to register</p>
+                <a href="register.php">
+                    <button class="loginButtons mt-2" type="button">Register</button>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </main>
+    <footer class = "footer mt-4">
+      <p>Copyright © 2025</p>
+    </footer>
 
-       {% include 'modal.html.twig' %}
+        {% include 'modal.html.twig' %}
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        window.status = '{{ status|default('')|e('js') }}';
-        window.username = '{{ username|default('')|e('js') }}';
-        window.context = '{{ context|default('')|e('js') }}';
-    </script>
-    <script src="public/js/modal.js"></script>
-    <script src="public/js/login.js"></script>
-  </body>
+        {# Scripts #}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            window.status = '{{ status|default('')|e('js') }}';
+            window.username = '{{ username|default('')|e('js') }}';
+            window.context = '{{ context|default('')|e('js') }}';
+        </script>
+        <script src="public/js/modal.js"></script>
+        <script src="public/js/login.js"></script>
+        {% include 'searchScript.html.twig' %}
+    </body>
 </html>
