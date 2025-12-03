@@ -22,7 +22,7 @@
               Show Password
               </button>
               {# CAPTCHA Image and Input #}
-              <img src="../captcha.php" alt="CAPTCHA Image">
+              <img src="/captcha.php" alt="CAPTCHA Image">
               <input type="text" class="form-control mt-2" name="captcha_input" placeholder="Enter CAPTCHA" required>
               {# Login button #}
               <button class="loginButtons mt-3" type="submit">Login</button>
@@ -34,7 +34,7 @@
                 <p>Enter your Email and Password to access your account</p>
                 <p>OR</p>
                 <p>Press Sign In to register</p>
-                <a href="register.php">
+                <a href="/register.php">
                     <button class="loginButtons mt-2" type="button">Register</button>
                 </a>
               </div>
@@ -50,7 +50,6 @@
         {% include 'modal.html.twig' %}
 
         {# Scripts #}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             window.status = '{{ status|default('')|e('js') }}';
             window.username = '{{ username|default('')|e('js') }}';

@@ -1,15 +1,15 @@
 <div id="userButtons" class="header-buttons">
     {% if user %}
         {# Logout Button #}
-        <form method="post" action="logout.php" class="inline-form">
+        <form method="post" action="/logout.php" class="inline-form">
             <button class="buttonIcon" type="submit">
                 <img src="public/icons/logout.png" alt="Logout Icon">
                 Logout
             </button>
         </form>
 
-        {# Delete Account Button #}
-        <form method="post" action="Profile.php" class="inline-form">
+        {# Profile Button #}
+        <form method="post" action="/Profile.php" class="inline-form">
             <button class="buttonIcon delete-btn" type="submit">
                 <img src="public/icons/user.png" alt="Login Icon">
                 Your Profile
@@ -17,13 +17,14 @@
         </form>
     {% else %}
         {# Login Button #}
-        <form action="login.php" class="inline-form">
+        <form action="/login.php" class="inline-form">
             <button class="buttonIcon login-btn" type="submit">
                 <img src="public/icons/user.png" alt="Login Icon">
                 Login
             </button>
         </form>
-        <form action="Register.php" class="inline-form">
+        {# Register Button #}
+        <form action="/Register.php" class="inline-form">
             <button class="buttonIcon login-btn" type="submit">
                 <img src="public/icons/user.png" alt="Login Icon">
                 Register

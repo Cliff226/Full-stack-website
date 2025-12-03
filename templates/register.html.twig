@@ -48,7 +48,7 @@
                             <p>Enter your personal details to create an account below</p>
                             <p>OR</p>
                             <p>Press Login to access your account</p>
-                            <a href="login.php">
+                            <a href="/login.php">
                                 <button class="loginButtons mt-2" type="button">Login</button>
                             </a>
                         </div>
@@ -63,7 +63,6 @@
         {% include 'modal.html.twig' %}
 
         {# Scripts #}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             window.status = '{{ status|default('')|e('js') }}';
             window.username = '{{ username|default('')|e('js') }}';

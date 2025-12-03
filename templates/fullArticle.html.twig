@@ -61,7 +61,7 @@
                         {% endif %}
                         
                         <form method="post" action="">
-                            <textarea class="form-control" name="comment_text" placeholder="Your Comment" required></textarea><br>
+                            <textarea class="form-control" id= "autoTextarea" name="comment_text" placeholder="Your Comment" required></textarea><br>
                             <button class="btn btn-primary" type="submit">Submit Comment</button>
                         </form>
                     </div>
@@ -73,5 +73,8 @@
             <p>Copyright © 2025</p>
         </footer>
         {% include 'searchScript.html.twig' %}
+        <script>// Initialize autosize on the textarea
+            autosize(document.getElementById('autoTextarea'));
+        </script>
     </body>
 </html>

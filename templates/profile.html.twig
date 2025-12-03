@@ -16,7 +16,7 @@
 
                 <div class = 'userbuttons'>
                     {# Logout Button #}
-                    <form method="post" action="logout.php" class="inline-form">
+                    <form method="post" action="/logout.php" class="inline-form">
                         <button class="buttonIcon" type="submit">
                             <img src="public/icons/logout.png" alt="Logout Icon">
                             Logout
@@ -25,33 +25,77 @@
                 </div>
 
                 <h2>Your Articles</h2>
+       
                 {% for post in posts %}
                     <div class="user-post mb-3">
-                        <h3>{{ post.title|e}}</h3>
+
+                        {# VIEW ARTICLE via GET link #}
+                        <h3>
+                            <a href="/fullArticle.php?articleId={{ post.id|e }}">
+                                {{ post.title|e }}
+                            </a>
+                        </h3>
+
                         <p>Created: {{ post.created_at|e }}</p>
+
                         <div class="btn-group btn-group-lg" role="group">
-                            <a class="btn btn-warning" href="editPost.php?id={{ post.id|e }}">Edit</a>
-                            <a class="btn btn-danger" href="deletePost.php?id={{ post.id|e }}" onclick="return confirm('Delete this article?')">Delete</a>
+                            
+                            {# EDIT POST via POST #}
+                            <form action="editPost.php" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{ post.id|e }}">
+                                <button class="btn btn-warning">Edit</button>
+                            </form>
+
+                            {# DELETE POST via POST #}
+                            <form action="deletePost.php" method="POST" style="display:inline;"
+                                onsubmit="return confirm('Delete this article?');">
+                                <input type="hidden" name="id" value="{{ post.id|e }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+
                         </div>
                     </div>
                 {% else %}
-                    <p>You have no articles.</p>
+                    <p>No posts found.</p>
                 {% endfor %}
 
+
                 <h2>Your Comments</h2>
+
                 {% for comment in comments %}
                     <div class="user-comment mb-3">
-                        <p>On article: <a href="fullArticle.php?articleId={{ comment.post_id|e }}">{{ comment.post_title|e }}</a></p>
+                        
+                        {# VIEW ARTICLE via GET link #}
+                        <p>On article: 
+                            <a href="/fullArticle.php?articleId={{ comment.post_id|e }}">
+                                {{ comment.post_title|e }}
+                            </a>
+                        </p>
+
                         <p>{{ comment.Comment_content|e }}</p>
                         <p>Created: {{ comment.created_at|e }}</p>
+
                         <div class="btn-group btn-group-lg" role="group">
-                            <a class="btn btn-warning" href="editComment.php?idComment={{ comment.id|e }}">Edit</a>
-                            <a class="btn btn-danger" href="deleteComment.php?idComment={{ comment.id|e }}" onclick="return confirm('Delete this comment?')">Delete</a>
+
+                            {# EDIT COMMENT via POST #}
+                            <form action="/editComment.php" method="POST" style="display:inline;">
+                                <input type="hidden" name="idComment" value="{{ comment.id|e }}">
+                                <button class="btn btn-warning">Edit</button>
+                            </form>
+
+                            {# DELETE COMMENT via POST #}
+                            <form action="/deleteComment.php" method="POST" style="display:inline;"
+                                onsubmit="return confirm('Delete this comment?');">
+                                <input type="hidden" name="idComment" value="{{ comment.id|e }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+
                         </div>
                     </div>
                 {% else %}
-                    <p>You have not made any comments.</p>
+                    <p>No comments found.</p>
                 {% endfor %}
+
             </div>
         </main>
         <footer class="footer mt-4">

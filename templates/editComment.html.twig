@@ -21,16 +21,16 @@
                 {% endif %}
 
                 <form method="post">
+                    <input type="hidden" name="idComment" value="{{ comment.id }}">
+
                     <div class="mb-3">
                         <label>Content:</label><br>
-
-                        <textarea name="content" id="autoTextarea"  class="form-control" required>{{ comment.Comment_content|e }}</textarea><br>
+                        <textarea name="content" id="autoTextarea" class="form-control" required>{{ comment.Comment_content|e }}</textarea><br>
 
                         <button class="btn btn-primary" type="submit">Save Changes</button>
-                        <a class="btn btn-primary" href="profile.php">Cancel</a>
+                        <a class="btn btn-primary" href="/profile.php">Cancel</a>
                     </div>
-                </form>
-            </div>
+            </form>
 
         </main>
         <footer class="footer mt-4">

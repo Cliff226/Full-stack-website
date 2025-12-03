@@ -20,15 +20,18 @@
                 {% endif %}
 
                 <form method="post">
+
+                    {# Hidden field sending the post ID via POST (CRITICAL) #}
+                    <input type="hidden" name="id" value="{{ post.id }}">
+
                     <label>Title:</label><br>
                     <input type="text" name="title" value="{{ post.title|e }}"><br><br>
 
                     <label>Content:</label><br>
-
-                    <textarea name="content" id="autoTextarea"  class="form-control" required>{{ post.content|e }}</textarea><br>
+                    <textarea name="content" id="autoTextarea" class="form-control" required>{{ post.content|e }}</textarea><br>
 
                     <button class="btn btn-primary" type="submit">Save Changes</button>
-                    <a class="btn btn-primary" href="profile.php">Cancel</a>
+                    <a class="btn btn-primary" href="/profile.php">Cancel</a>
                 </form>
             </div>
 
