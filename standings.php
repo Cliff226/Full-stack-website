@@ -1,22 +1,20 @@
 <?php
-require_once 'dbConnections/security.php' ;
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
-require_once 'standingsApi.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/standingsDatabaseConnection.php';// Used to load the database connection
+require_once 'standingsApi.php';// Used to load the Api File
 
-session_start();
-
+session_start(); // Start new or resume existing session
 
 // Twig setup
-
-$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // always escape output by default for safety
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
-
-// Get logged-in user from session (for display)
+//Fetch the user from the session if logged in
 $user = $_SESSION['user'] ?? null;
 
 

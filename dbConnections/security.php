@@ -2,9 +2,6 @@
 // Start output buffering
 ob_start();
 
-// Content Security Policy
-// header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https://crests.football-data.org;  style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://api.football-data.org; frame-ancestors 'self'; base-uri 'self';");
-
 // Anti-clickjacking
 header('X-Frame-Options: SAMEORIGIN');
 

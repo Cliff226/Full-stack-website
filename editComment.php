@@ -1,74 +1,59 @@
 <?php
-require_once 'dbConnections/security.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
-require_once 'vendor/autoload.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/standingsDatabaseConnection.php';// Used to load the database connection
 
-session_start();
+session_start(); // Start new or resume existing session
 
 // Twig setup
-$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // ensures output is escaped
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
-// Check if user is logged in
+//inisalise varable
+$error = [];
+
+// Check logged-in user
 $userEmail = $_SESSION['user'] ?? null;
-if (!$userEmail) {
-    die("Not authorized.");
-}
+if (!$userEmail) die("Not authorised.");
 
-// Validate comment ID as integer to prevent sql code inputting
-$commentId = filter_input(INPUT_GET, 'idComment', FILTER_VALIDATE_INT);
-if (!$commentId) die("No valid comment selected.");
+// Get comment ID via POST
+$commentId = filter_input(INPUT_POST, 'idComment', FILTER_VALIDATE_INT);
+if (!$commentId) die("Invalid comment selected.");
 
-// Fetch comment safely
+// Fetch comment
 $stmt = $pdo->prepare("SELECT * FROM comments WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $commentId]);
 $comment = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$comment) die("Comment not found.");
-
-// Check if the logged-in user owns the comment
-if ($comment['author_email'] !== $userEmail) {
-    die("You cannot edit this comment.");
-}
-
-// Initialise error variable
-$error = null;
+if ($comment['author_email'] !== $userEmail) die("You cannot edit this comment.");
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Trim and sanitize input
-    $content = trim($_POST['content'] ?? '');
-    $content = filter_var($content, FILTER_SANITIZE_FULL_SPECIAL_CHARS); // prevents HTML injection
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
+    $content = trim($_POST['content']);
 
     if ($content === '') {
-        $error = "Content cannot be empty.";
+        $error = "Comment cannot be empty.";
     } else {
-        // Update comment in database safely using prepared statements
-        $stmt = $pdo->prepare("
-            UPDATE comments
-            SET Comment_content = :content
-            WHERE id = :id
-        ");
+        $stmt = $pdo->prepare("UPDATE comments SET Comment_content = :content WHERE id = :id");
         $stmt->execute([
             ':content' => $content,
             ':id' => $commentId
         ]);
 
-        // Redirect after successful edit
-        header("Location: profile.php");
+        header("Location: /profile.php");
         exit;
     }
 }
 
-// Render edit form
-echo $twig->render('editcomment.html.twig', [
-    'comment' => $comment,  // output escaped automatically by Twig
+// Render Twig template
+echo $twig->render('editComment.html.twig', [
+    'comment' => $comment,
     'error' => $error,
-    'user' => $userEmail
-]);
+    'context'     => 'postCreated'
 
-// Close PDO connection
-$pdo = null;
+]);

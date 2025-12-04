@@ -3,6 +3,7 @@
 <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content bg-success text-white">
+       {# Modal Header #}
       <div class="modal-header">
         <h5 class="modal-title">
           {% if context == 'login' %}
@@ -13,6 +14,7 @@
               Registration Successful
           {% endif %}
         </h5>
+        {# Close button #}
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -32,6 +34,7 @@
 <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content bg-danger text-white">
+       {# Modal Header #}
       <div class="modal-header">
         <h5 class="modal-title">
           {% if context == 'login' %}
@@ -42,8 +45,10 @@
             Registration Failed
           {% endif %}
         </h5>
+        {# Close button #}
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+      {# Modal with error message #}
       <div class="modal-body">
         {% if errors %}
             <ul>

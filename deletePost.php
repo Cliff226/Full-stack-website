@@ -1,45 +1,29 @@
 <?php
-require_once 'dbConnections/security.php';
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'dbConnections/standingsDatabaseConnection.php';//Used to load the database connection 
 
-session_start();
+session_start();// Start new or resume existing session
 
-// Twig not needed here since no output is rendered
+// Must be logged in
 $userEmail = $_SESSION['user'] ?? null;
-if (!$userEmail) {
-    die("Not authorized.");
-}
+if (!$userEmail) die("Not authorised.");
 
-// Validate post ID
-$postId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$postId) {
-    die("No valid post selected.");
-}
+// Get post ID from POST
+$postId = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+if (!$postId) die("Invalid post selected.");
 
-// Fetch the post to verify ownership
+// Verify post belongs to user
 $stmt = $pdo->prepare("SELECT author_email FROM blog_posts WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $postId]);
-$post = $stmt->fetch(PDO::FETCH_ASSOC);
+$post = $stmt->fetch();
 
-if (!$post) {
-    die("Post not found.");
-}
+if (!$post) die("Post not found.");
+if ($post['author_email'] !== $userEmail) die("You cannot delete this post.");
 
-// Ownership check
-if ($post['author_email'] !== $userEmail) {
-    die("You cannot delete this post.");
-}
-
-// Delete the post
-$stmt = $pdo->prepare("DELETE FROM blog_posts WHERE id = :id");
+// Delete post
+$stmt = $pdo->prepare("DELETE FROM blog_posts WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $postId]);
 
-// Delete associated comments
-$stmt = $pdo->prepare("DELETE FROM comments WHERE post_id = :id");
-$stmt->execute([':id' => $postId]);
-
-// Redirect after deletion
-header("Location: profile.php");
-$pdo = null;
+header("Location: /profile.php");
 exit;

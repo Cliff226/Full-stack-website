@@ -63,6 +63,10 @@ body {
   transform: translateY(-3px);
 }
 
+.btn:hover {
+  font-weight: 900 !important;
+  font-style: oblique !important;
+}
 
 /* CONTENT SECTION */
 .content {
@@ -550,6 +554,7 @@ form.clubSelect {
   align-items: center;
   transition: transform 0.2s ease-in-out;
   width: 90%;
+  text-shadow: 1px 1px 3px rgb(0 0 0 / 68%);
 }
 img.websitelogo { 
   width: 15%; 
@@ -668,6 +673,10 @@ img.websitelogo {
   font-size: small !important;    
   width: inherit; 
 }
+.CAPTCHA{
+  margin:15px 0;
+  border-radius: 5px;
+}
 
 .CreatePostForm{
   background-color: #0a0927;
@@ -711,9 +720,12 @@ img.websitelogo {
 .addCommentSection{
   margin-top: 0%;
   padding: 2%;
-  background-color: #0604451f;
+  background-color: #04041ef7;
   margin-bottom: 5%;
   color: #c4132a;
+  transition: 0.3s ease;
+  box-shadow: 0 5px 25px rgba(128, 7, 7, 0.2);
+  border-radius: 25px;
 }
 .articleMain{
   margin: 5%;
@@ -730,6 +742,9 @@ img.websitelogo {
   background-color: #0604451f;
   margin-bottom: 5%;
   color:#c4132a;
+    transition: 0.3s ease;
+  box-shadow: 0 5px 25px rgba(128, 7, 7, 0.2);
+  border-radius: 25px;
 }
 
 .CommentSection p{

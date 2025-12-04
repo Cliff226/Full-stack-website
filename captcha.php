@@ -1,7 +1,14 @@
 <?php
-require_once 'dbConnections/security.php' ;
+// Content Security Policy 
 
-session_start();
+// Anti-clickjacking
+header('X-Frame-Options: SAMEORIGIN');
+
+// Prevent MIME-type sniffing
+header('X-Content-Type-Options: nosniff'); 
+
+session_start(); // Use to the login info can be stroed in it 
+
 
 // Used to generate a 5 random character for CAPTCHA code
 $code = substr(str_shuffle("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"), 0, 5);
@@ -18,8 +25,8 @@ $bg = imagecolorallocate($image, 255, 255, 255);
 $fg = imagecolorallocate($image, 0, 0, 0);
 
 // Fill background and add CAPTCHA text
-imagefill($image, 0, 0, $bg);
-imagestring($image, 5, 20, 10, $code, $fg);
+imagefill($image, 10, 20, $bg);
+imagestring($image, 5, 30, 15, $code, $fg);
 
 // Output the image 
 imagepng($image);

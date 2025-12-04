@@ -9,13 +9,13 @@
                 {{ include('navigation.html.twig') }}
             </nav>
         </header>
-
+        {# Main section #}
         <main class="main">
             <div class="profile">
+                {# Display the name of the user #}
                 <h1>{{ user_name|e }}'s Profile</h1>
-
+                {#Logout button #}
                 <div class = 'userbuttons'>
-                    {# Logout Button #}
                     <form method="post" action="/logout.php" class="inline-form">
                         <button class="buttonIcon" type="submit">
                             <img src="public/icons/logout.png" alt="Logout Icon">
@@ -23,30 +23,29 @@
                         </button>
                     </form>
                 </div>
-
+                {# Articles Section #}
                 <h2>Your Articles</h2>
-       
+                {# Loop through all post to display all articles #}
                 {% for post in posts %}
                     <div class="user-post mb-3">
-
-                        {# VIEW ARTICLE via GET link #}
                         <h3>
+                            {# Link to view full article #}
                             <a href="/fullArticle.php?articleId={{ post.id|e }}">
                                 {{ post.title|e }}
                             </a>
                         </h3>
-
+                        {# Data of article #}
                         <p>Created: {{ post.created_at|e }}</p>
-
+                         {# Edit or delete article #}
                         <div class="btn-group btn-group-lg" role="group">
-                            
-                            {# EDIT POST via POST #}
+                            {# Edit article with POST #}
                             <form action="editPost.php" method="POST" style="display:inline;">
                                 <input type="hidden" name="id" value="{{ post.id|e }}">
                                 <button class="btn btn-warning">Edit</button>
                             </form>
 
-                            {# DELETE POST via POST #}
+                            {# Delete article with POST #}
+                            {# Using a confirmation prompt to confirm delete #}
                             <form action="deletePost.php" method="POST" style="display:inline;"
                                 onsubmit="return confirm('Delete this article?');">
                                 <input type="hidden" name="id" value="{{ post.id|e }}">
@@ -56,34 +55,33 @@
                         </div>
                     </div>
                 {% else %}
+                {# Show message if user has no posts #}
                     <p>No posts found.</p>
                 {% endfor %}
 
-
+                {# User's Comments Section #}
                 <h2>Your Comments</h2>
-
+                {# Loop through all comments and display #}
                 {% for comment in comments %}
                     <div class="user-comment mb-3">
-                        
-                        {# VIEW ARTICLE via GET link #}
                         <p>On article: 
+                        {# Link to view the article with that comment #}
                             <a href="/fullArticle.php?articleId={{ comment.post_id|e }}">
                                 {{ comment.post_title|e }}
                             </a>
                         </p>
-
+                        {# Display comment and date #}
                         <p>{{ comment.Comment_content|e }}</p>
                         <p>Created: {{ comment.created_at|e }}</p>
-
+                        {# Buttons to edit or delete#}
                         <div class="btn-group btn-group-lg" role="group">
-
-                            {# EDIT COMMENT via POST #}
+                            {# Edit comment via POST #}
                             <form action="/editComment.php" method="POST" style="display:inline;">
                                 <input type="hidden" name="idComment" value="{{ comment.id|e }}">
                                 <button class="btn btn-warning">Edit</button>
                             </form>
 
-                            {# DELETE COMMENT via POST #}
+                            {# Delete comment via POST #}
                             <form action="/deleteComment.php" method="POST" style="display:inline;"
                                 onsubmit="return confirm('Delete this comment?');">
                                 <input type="hidden" name="idComment" value="{{ comment.id|e }}">
@@ -93,14 +91,17 @@
                         </div>
                     </div>
                 {% else %}
+                {# Show message if user has no comments #}
                     <p>No comments found.</p>
                 {% endfor %}
 
             </div>
         </main>
+        {# Footer Section #}
         <footer class="footer mt-4">
             <p>Copyright © 2025</p>
         </footer>
+         {# Include search template #}
         {% include 'searchScript.html.twig' %}
     </body>
 </html>

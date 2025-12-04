@@ -1,48 +1,56 @@
 <?php
-require_once 'dbConnections/security.php' ;
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/standingsDatabaseConnection.php';//Used to load the database connection 
 
-session_start();
-
-// Twig setup with output escaping
-$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
+session_start(); // Start new or resume existing session
+// Twig setup
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html',
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
 // Check if user is logged in
-$user = $_SESSION['name'] ?? false;
-$email = $_SESSION['user'] ?? null;
-$status = $_SESSION['status'] ?? '';
-$context = $_SESSION['context'] ?? '';
-unset($_SESSION['status'], $_SESSION['context']);
+$user = $_SESSION['name'] ?? false;//Store the name of the loged in user
+$email = $_SESSION['user'] ?? null; //Store the email of the loged in user
+$status = $_SESSION['status'] ?? ''; // For modal 
+$context = $_SESSION['context'] ?? ''; //for modal output
+unset($_SESSION['status'], $_SESSION['context']); // Remove from the session not needed anymore
 
+//User not logged in 
 if (!$user || !$email) {
-    $_SESSION['notLoggedIn'] = true; 
-    header("Location: index.php");
+    $_SESSION['notLoggedIn'] = true; //Sets a session show the in the login modal
+    header("Location: /index.php"); //Redirects to index.php.
     exit;
 }
 
 // Get selected league code from GET with filtering
 $leagueCode = trim(filter_input(INPUT_GET, 'league', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
 if (!$leagueCode) {
-    die("No league selected.");
+    // If the league code is not found relocate to index 
+    header("Location: /index.php");//Redirects to index.php.
+    exit;
 }
 
-// Read leagues from cookie
+// Load League Data from Cookie
 if (isset($_COOKIE['leaguesData'])) {
-    $leagues = json_decode($_COOKIE['leaguesData'], true);
+    // Reads previously stored league data from a JSON cookie.
+    $leagues = json_decode($_COOKIE['leaguesData'], true); //Decodes it into an associative array.
 } else {
-    die("No league data in cookie.");
+    // If the cookie is empty relocate to index 
+    header("Location: /index.php");//Redirects to index.php.
+    exit;
 }
 
 // Check if the selected league exists in the cookie
 if (isset($leagues[$leagueCode])) {
     $selectedLeague = $leagues[$leagueCode];
 } else {
-    die("League not found in cookie.");
+        // if the league dose not exist relocate to index 
+    header("Location: /index.php");//Redirects to index.php (invalid or tampered URL).
+    exit;
 }
 
 // Extract league details
@@ -58,6 +66,7 @@ $stmt = $pdo->prepare(" SELECT id, title, content, author_name, image_path, crea
 ");
 $stmt->execute([':league_code' => $leagueCode]);
 
+// Store the posts
 $posts = [];
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $posts[] = $row; // Twig will escape output
@@ -65,15 +74,16 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 // Render template
 echo $twig->render('blogArticles.html.twig', [
-    'user' => $user,
-    'current_page' => 'blogArticles',
-    'leagueName'  => $leagueName,
-    'leagueCrest' => $leagueCrest,
-    'leagueCode'  => $leagueCode,
-    'leagueId'    => $leagueId,
-    'posts'       => $posts,
-    'status'      => $status,
-    'context'     => $context
+    'user' => $user, //Current user
+    'current_page' => 'blogArticles',//Active page
+    'leagueName'  => $leagueName,//League info
+    'leagueCrest' => $leagueCrest,//League info
+    'leagueCode'  => $leagueCode,//League info
+    'leagueId'    => $leagueId,//League info
+    'posts'       => $posts,//List of posts 
+    'status'      => $status, //Modal status messages
+    'context'     => $context//Modal status messages
 ]);
 
+//Close the Pdo connection
 $pdo = null;

@@ -1,17 +1,20 @@
 <?php
-require_once 'dbConnections/standingsDatabaseConnection.php';
+require_once 'dbConnections/standingsDatabaseConnection.php';// Used to load the database connection
 
 function updateStandings($leagueCode, $leagueId, $season = 2025) {
 
     global $pdo;
 
-    // Ensure UTF-8 connection
+    // Ensure UTF-8 character encoding for DB connection
     $pdo->exec("SET NAMES 'utf8mb4'");
 
+    // API setup    
     $apiToken = "0c98b44563234432be112138964c7529";
+
+    // API url 
     $url = "https://api.football-data.org/v4/competitions/{$leagueCode}/standings";
 
-    // Fetch data from API
+     // Initialise cURL
     $curl = curl_init();
     curl_setopt_array($curl, [
         CURLOPT_URL => $url,
@@ -25,6 +28,8 @@ function updateStandings($leagueCode, $leagueId, $season = 2025) {
     $err = curl_error($curl);
     curl_close($curl);
 
+    
+    // Handle API errors
     if ($err) {
         error_log("Standings API error: $err");
         return;
@@ -61,7 +66,7 @@ function updateStandings($leagueCode, $leagueId, $season = 2025) {
 
     foreach ($standings as $team) {
 
-        // Sanitize & trim string values
+        // Sanitise & trim string values
         $teamName   = trim($team['team']['name']);
         $shortName  = isset($team['team']['shortName']) ? trim($team['team']['shortName']) : null;
         $tla        = isset($team['team']['tla']) ? trim($team['team']['tla']) : null;

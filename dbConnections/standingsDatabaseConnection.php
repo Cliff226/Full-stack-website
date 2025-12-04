@@ -28,7 +28,7 @@ try {
 }
 
 // Twig Helper Function for XSS-Safe Output
-// This function is used toescapes special HTML characters to prevent XSS attacks
+// This function is used to escapes special HTML characters to prevent XSS attacks
 function e($string) {
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }

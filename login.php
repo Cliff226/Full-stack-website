@@ -1,20 +1,21 @@
 <?php
-require_once 'dbConnections/security.php';
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/usersDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/usersDatabaseConnection.php';// Used to load the database connection
 
-session_start();
+session_start(); // Start new or resume existing session
 
 // Twig setup
-$loader = new \Twig\Loader\FilesystemLoader('templates');
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html',
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
 // Redirect if already logged in
 if (isset($_SESSION['user'])) {
-    header("Location: index.php");
+    header("Location: /index.php");
     exit;
 }
 
@@ -51,8 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            $stmt = $pdo->prepare("
-                SELECT name, surname, email, dob, password, favorite_league 
+            $stmt = $pdo->prepare("SELECT name, surname, email, dob, password, favorite_league 
                 FROM users 
                 WHERE email = :email
             ");
@@ -81,11 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie(
                     "userData",
                     json_encode($userData),
-                    time() + 7200,
-                    "/",
-                    "",
-                    false,
-                    true
+                    [
+                        'expires'  => time() + 7200,
+                        'path'     => '/',
+                        'domain'   => '',        // usually leave empty
+                        'secure'   => true,      // only send over HTTPS
+                        'httponly' => true,      // JS can't read it
+                        'samesite' => 'Strict'   // prevents CSRF
+                    ]
                 );
 
             } else {

@@ -1,41 +1,29 @@
 <?php
-require_once 'dbConnections/security.php';
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'dbConnections/standingsDatabaseConnection.php';//Used to load the database connection 
 
-session_start();
+session_start(); // Start new or resume existing session
 
+// Check if user is logged in
 $userEmail = $_SESSION['user'] ?? null;
-if (!$userEmail) {
-    die("Not authorized.");
-}
+if (!$userEmail) die("Not authorised.");
 
-// Validate comment ID
-$commentId = filter_input(INPUT_GET, 'idComment', FILTER_VALIDATE_INT);
-if (!$commentId) {
-    die("No valid comment selected.");
-}
+// Get ID from the methed post 
+$commentId = filter_input(INPUT_POST, 'idComment', FILTER_VALIDATE_INT);
+if (!$commentId) die("Invalid comment selected.");
 
-// Fetch the comment to verify if comment belonges to user
+// Check ownership 
 $stmt = $pdo->prepare("SELECT author_email FROM comments WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $commentId]);
-$comment = $stmt->fetch(PDO::FETCH_ASSOC);
+$comment = $stmt->fetch();
 
-if (!$comment) {
-    die("Comment not found.");
-}
+if (!$comment) die("Comment not found.");
+if ($comment['author_email'] !== $userEmail) die("You cannot delete this comment.");
 
-// Check if comment belonges to the user 
-if ($comment['author_email'] !== $userEmail) {
-    die("You cannot delete this comment.");
-}
-
-// Delete the comment
-$stmt = $pdo->prepare("DELETE FROM comments WHERE id = :id");
+// Delete comment
+$stmt = $pdo->prepare("DELETE FROM comments WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $commentId]);
 
-header("Location: profile.php");
-
-// Close PDO connection
-$pdo = null;
+header("Location: /profile.php");
 exit;

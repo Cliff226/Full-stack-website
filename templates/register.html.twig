@@ -16,11 +16,14 @@
                     {# Registration div on left and on bottom in mobile #}
                     <div class="col-md-6 order-md-1 order-2" id="registrationForm">
                         <h1>Register</h1>
+                        {# Personal info #}
                         <input type="text" id="firstName" name="name" class="form-control mb-3" placeholder="First name" required>
                         <input type="text" id="lastName" name="surname" class="form-control mb-3" placeholder="Last name" required>
                         <input type="email" id="email" name="email" class="form-control mb-3" placeholder="Email @example.com" required>
                         <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                        <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control mb-3" required max="<?= date('Y-m-d', strtotime('-10 year')); ?>">
+                        {# Date of Birth between 10 and 110 #}
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control mb-3" required max="<?= date('Y-m-d', strtotime('-10 years')); ?>" min="<?= date('Y-m-d', strtotime('-110 years')); ?>">
+                        {# League selection dropdown #}
                         <select class="form-select mb-3" name="league" required>
                             <option selected disabled value="">Choose your league...</option>
                             <option value="English Premier League">English Premier League</option>
@@ -29,13 +32,13 @@
                             <option value="Bundesliga Germany">Bundesliga Germany</option>
                             <option value="Ligue 1 France">Ligue 1 France</option>
                         </select>
-                        {# passwords #}
+                        {# Password and confirm password #}
                         <input type="password" id="inputPassword" class="form-control register-password mb-2" name="passwordLogin" placeholder="Password (min 6 characters)" minlength="6" required>
                         <input type="password" id="inputConfirmPassword" class="form-control register-password mb-2" name="confirm_password" placeholder="Confirm Password (min 6 characters)" minlength="6" required>
                         {# Show and hide password button #}
                         <button type="button" class="loginButtons mb-3" id="toggleAllPasswords">Show Password</button>
                         {# CAPTCHA Image and Input #}
-                        <img src="../captcha.php" alt="CAPTCHA Image">
+                        <img src="../captcha.php" <class= "CAPTCHA" alt="CAPTCHA Image">
                         <input type="text" class="form-control mt-2" name="captcha_input" placeholder="Enter CAPTCHA" required>
 
                         {# Submit button #}
@@ -56,20 +59,24 @@
                 </div>
             </form>
         </div>
+        {# Footer Section #}
         <footer class = "footer">
         <p>Copyright © 2025</p>
         </footer>
-
+         {# Include modal for registration#}
         {% include 'modal.html.twig' %}
 
         {# Scripts #}
         <script>
+        {# Pass variables to JS for modal handlin #}
             window.status = '{{ status|default('')|e('js') }}';
             window.username = '{{ username|default('')|e('js') }}';
             window.context = '{{ context|default('')|e('js') }}';
         </script>
+        {# JS scripts for modals and form #}
         <script src="public/js/modal.js"></script>
         <script src="public/js/register.js"></script>
+        {# Include search script template #}
         {% include 'searchScript.html.twig' %}
     </body>
 </html>

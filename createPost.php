@@ -1,104 +1,125 @@
 <?php
-require_once 'dbConnections/security.php';
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/standingsDatabaseConnection.php';//Used to load the database connection 
 
-session_start();
+session_start(); // Start new or resume existing session
 
 // Twig setup
-$loader = new \Twig\Loader\FilesystemLoader('templates');
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // Twig will escape outputs automatically
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
-
 // Check if user is logged in
 $user = $_SESSION['name'] ?? false;
 $email = $_SESSION['user'] ?? null;
-if (!$user || !$email) {
-    die("Not authorized.");
+
+// If not logged in store for modal and redirect to index
+if (!$user) {
+    $_SESSION['notLoggedIn'] = true;  
+    header("Location: /index.php");
+    exit;
 }
 
-// Get league code from POST or GET
+// Get league code from POST or GET and sanitise
 $leagueCode = filter_input(INPUT_POST, 'league', FILTER_SANITIZE_FULL_SPECIAL_CHARS)
            ?? filter_input(INPUT_GET, 'league', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-if (!$leagueCode) die("No league selected.");
+
+// if empty redirect
+if (!$leagueCode) { 
+    header("Location: /index.php");
+    exit;
+}
 
 // Load leagues from cookie and decode
 $leagues = json_decode($_COOKIE['leaguesData'] ?? '{}', true);
-if (!isset($leagues[$leagueCode])) die("League not found.");
 
+//check if the league exits 
+if (!isset($leagues[$leagueCode])) { 
+    header("Location: /index.php");
+    exit;
+}
+
+//Initialise selected league variables
 $selectedLeague = $leagues[$leagueCode];
 $leagueName = $selectedLeague['name'];
 $leagueCrest = $selectedLeague['crest'];
-
+// Initialise variables for errors, status, and uploaded image
 $errors = [];
 $status = '';
 $imagePath = null;
 
-// Handle form submission
+// Handle form submission for method post
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Filter and sanitise user inputs
+
+     // sanitise and and trim user inputs
     $title   = trim(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
     $content = trim(filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
 
+    //  Validate inputs check if empty
     if ($title === '') $errors[] = "Title cannot be empty.";
     if ($content === '') $errors[] = "Content cannot be empty.";
 
-    // Handle image upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $tmpName  = $_FILES['image']['tmp_name'];
-        $fileName = basename($_FILES['image']['name']);
-        $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg','jpeg','png','gif'];
+    // Handle image upload if a file was submitted
+    if (!empty($_FILES['image']['tmp_name'])) {//checks if the user actually selected a file.
+        //tmp_name is the temporary file path on the server.
+        $tmpName = $_FILES['image']['tmp_name']; //Stores the temporary file location
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));//extracts the file extension
+        //Ensuring it is lowercase for consistent validation.
 
-        if (in_array($fileExt, $allowedExts)) {
-            $newFileName = uniqid('img_', true) . '.' . $fileExt;
-            $uploadDir = __DIR__ . '/public/uploads/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $destination = $uploadDir . $newFileName;
+        $allowedExts = ['jpg','jpeg','png','gif']; //Validates the file extension
 
-            if (move_uploaded_file($tmpName, $destination)) {
-                $imagePath = 'public/uploads/' . $newFileName;
+         // Validate image extension
+        if (in_array($ext, $allowedExts)) {//Checks if the uploaded file’s extension is in the allowed list.
+            $newFile = 'img_' . uniqid() . '.' . $ext;//Generate a unique filename
+            $uploadDir = __DIR__ . '/public/uploads/';//Where the images will be stored
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);//checks if the folder exists
+            // Move uploaded file to uploads folder
+            if (move_uploaded_file($tmpName, $uploadDir . $newFile)) {
+                $imagePath = 'public/uploads/' . $newFile;
             } else {
-                $errors[] = "Failed to upload the image.";
+                $errors[] = "Failed to upload image.";
             }
         } else {
-            $errors[] = "Only JPG, PNG, GIF files are allowed.";
+            $errors[] = "Invalid image type.";
         }
     }
-
-    // Insert blog post if no errors
+     // Insert post into database if no errors are found
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO blog_posts 
-            (title, content, author_name, author_email, image_path, league_code, created_at)
-            VALUES (:title, :content, :author_name, :author_email, :image_path, :league_code, NOW())");
-
+        $stmt = $pdo->prepare("INSERT INTO blog_posts (title, content, author_name, author_email, image_path, league_code, created_at)
+                               VALUES (:title, :content, :author_name, :author_email, :image_path, :league_code, NOW())");
         $stmt->execute([
-            ':title'        => $title,
-            ':content'      => $content,
-            ':author_name'  => $user,
-            ':author_email' => $email,
-            ':image_path'   => $imagePath,
-            ':league_code'  => $leagueCode
+            ':title' => $title,//Content title
+            ':content' => $content,//Content text
+            ':author_name' => $user, //Name of the author
+            ':author_email' => $email,//email of teh author
+            ':image_path' => $imagePath, //New image path
+            ':league_code' => $leagueCode//league code
         ]);
 
-        $status = 'success';
-        header("Location: blogArticles.php?league=" . urlencode($leagueCode));
+        // Redirect to specific league blog articles page
+        header("Location: /blogArticles.php?league=" . urlencode($leagueCode));
         exit;
+
     } else {
+        // Set error status for Twig templat
         $status = 'error';
     }
 }
 
 // Render Twig template
 echo $twig->render('createPost.html.twig', [
-    'user'        => $user,
-    'leagueName'  => $leagueName,
-    'leagueCrest' => $leagueCrest,
-    'leagueCode'  => $leagueCode,
-    'status'      => $status,
-    'errors'      => $errors
+    'user'        => $user, //Current user
+    'leagueName'  => $leagueName,//Used for redireting
+    'leagueCrest' => $leagueCrest,//Used for redireting
+    'leagueCode'  => $leagueCode,//Used for redireting and to store
+    'status'      => $status,//For modal
+    'errors'      => $errors,//For modal
+    'context'     => 'postCreated'//For modal
 ]);
 
+//Close the Pdo connection
 $pdo = null;

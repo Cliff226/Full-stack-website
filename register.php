@@ -1,15 +1,16 @@
 <?php
-require_once 'dbConnections/security.php' ;
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/usersDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/usersDatabaseConnection.php';// Used to load the database connection
 
-session_start(); // Required for both user sessions and CAPTCHA
+session_start(); // Start new or resume existing session 
 
 // Twig setup
-$loader = new \Twig\Loader\FilesystemLoader('templates');
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // output escaping
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
 $errors = [];
@@ -83,8 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("
-            INSERT INTO users (name, surname, email, dob, password, favorite_league)
+        $stmt = $pdo->prepare("INSERT INTO users (name, surname, email, dob, password, favorite_league)
             VALUES (:name, :surname, :email, :dob, :password, :favorite_league)
         ");
 
@@ -111,11 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setcookie(
                 "userData",
                 json_encode($userData),
-                time() + 3600,
-                "/",
-                "",
-                false,
-                true
+                [
+                    'expires'  => time() + 7200,
+                    'path'     => '/',
+                    'domain'   => '',        // usually leave empty
+                    'secure'   => true,      // only send over HTTPS
+                    'httponly' => true,      // JS can't read it
+                    'samesite' => 'Strict'   // prevents CSRF
+                ]
             );
 
             $status = 'success';

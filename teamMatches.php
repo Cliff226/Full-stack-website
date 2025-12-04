@@ -1,33 +1,56 @@
 <?php
-require_once 'dbConnections/security.php' ;
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/standingsDatabaseConnection.php';
-require_once 'standingsApi.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/standingsDatabaseConnection.php';//Load teh datbase connection
+require_once 'standingsApi.php';//load teh api if needed
 
-session_start();
 
-$loader = new \Twig\Loader\FilesystemLoader('templates');
+session_start(); // Start new or resume existing session
+
+// Twig setup
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // can be 'html', 'js', 'css', 'url', false
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
 
+
+//// Initialises the variables
 $matchesData = [];
 $groupedMatches = [];
+$user = $_SESSION['user'] ?? null;
 
-//set user if logged in 
-if(isset($_SESSION['user'])){
-    $user =  $_SESSION['user'] ?? null;
-}
+$leagueName = '';
+$leagueCrest = '';
+$leagueId = 0;
+$standings = [];
+$teamData = [];
+
+
+
+//If foarm is submited
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
 
-    // Sanitize input
-    $clubName = htmlspecialchars(trim($_POST['clubNameSearch']), ENT_QUOTES, 'UTF-8');
+    
+    //Sanitise teh search input
 
-    // Fetch team ID
+    $clubName = trim($_POST['clubNameSearch'] ?? '');
+
+    // Escape before using it anywhere (XSS protection)
+    $clubNameEscaped = htmlspecialchars($clubName, ENT_QUOTES, 'UTF-8');
+
+    if ($clubName === '') {
+        $_SESSION['teamNotfound'] = true;
+        header("Location: index.php");
+        exit;
+    }
+
+
+    //Get the team id 
     $stmt = $pdo->prepare("SELECT team_id FROM standings WHERE team_name = :club LIMIT 1");
-    $stmt->execute(['club' => $clubName]);
+    $stmt->execute(['club' => $clubNameEscaped]);
     $team = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$team) {
@@ -36,83 +59,115 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
         exit;
     }
 
-    $teamId = (int)$team['team_id'];
+    $teamId = (int)$team['team_id']; // safe cast
 
-    // Load existing matches
+
+    //Load streod matches
+
     $stmt = $pdo->prepare("SELECT * FROM team_matches WHERE team_id = :team_id ORDER BY kickoff ASC");
     $stmt->execute(['team_id' => $teamId]);
     $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $needsUpdate = true;
 
+
+
+     //cheack teh last update
+
     if (!empty($matchesData)) {
-        $stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM team_matches WHERE id = :team_id");
+        $stmt = $pdo->prepare("SELECT MAX(last_updated) AS last_update FROM team_matches WHERE team_id = :team_id");
         $stmt->execute(['team_id' => $teamId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($row['last_update'])) {
             $lastDate = new DateTime($row['last_update']);
             $now = new DateTime();
+
+            // If less than 1 hour old → NO API CALL (prevents spam)
             if ($now->getTimestamp() - $lastDate->getTimestamp() < 3600) {
-                $needsUpdate = false; // updated within 1 hour
+                $needsUpdate = false;
             }
         }
     }
 
-    // Update from API if needed
-    if ($needsUpdate) {
-        $teamIdForAPI = $teamId; // pass to API script
-        include 'TeamMatchesAPI.php';
 
-        // Reload matches
+
+     //udate from API
+
+    if ($needsUpdate) {
+        $teamIdForAPI = $teamId; 
+        include 'teamMatchesAPI.php';
+
+        // Reload data
         $stmt = $pdo->prepare("SELECT * FROM team_matches WHERE team_id = :team_id ORDER BY kickoff ASC");
         $stmt->execute(['team_id' => $teamId]);
         $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Update standings
-        $country = $matchesData[0]['country'];
-        $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country LIMIT 1");
-        $stmt->execute(['country' => $country]);
-        $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($leagueData) {
-            $leagueCode = $leagueData['code'];
-            $leagueId = $leagueData['id'];
-            updateStandings($leagueCode, $leagueId);
+        // Update standings based on country
+        if (!empty($matchesData)) {
+            $country = $matchesData[0]['country'];
+
+            $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country LIMIT 1");
+            $stmt->execute(['country' => $country]);
+            $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($leagueData) {
+                updateStandings($leagueData['code'], $leagueData['id']);
+            }
         }
     }
 
-    // Get league info
-    $country = $matchesData[0]['country'];
-    $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country LIMIT 1");
-    $stmt->execute(['country' => $country]);
-    $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $leagueName = htmlspecialchars($leagueData['name'], ENT_QUOTES, 'UTF-8');
-    $leagueCrest = $leagueData['crest'];
-    $leagueId = $leagueData['id'];
 
-    // Get standings
-    $stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :league_id ORDER BY position ASC");
-    $stmt->execute(['league_id'=> $leagueId]);
-    $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //Load league info
 
-    // Get team data
-    $stmt = $pdo->prepare("SELECT * FROM standings WHERE team_id = :team_id");
+    if (!empty($matchesData)) {
+        $country = $matchesData[0]['country'] ?? '';
+
+        $stmt = $pdo->prepare("SELECT * FROM leagues WHERE country = :country LIMIT 1");
+        $stmt->execute(['country' => $country]);
+        $leagueData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($leagueData) {
+            $leagueName = htmlspecialchars($leagueData['name'], ENT_QUOTES, 'UTF-8');
+            $leagueCrest = $leagueData['crest'];
+            $leagueId = (int)$leagueData['id'];
+        }
+    }
+
+
+
+    //load standings 
+    if ($leagueId > 0) {
+        $stmt = $pdo->prepare("SELECT * FROM standings WHERE league_id = :lid ORDER BY position ASC");
+        $stmt->execute(['lid' => $leagueId]);
+        $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
+    //Load team table row
+
+    $stmt = $pdo->prepare("SELECT * FROM standings WHERE team_id = :team_id LIMIT 1");
     $stmt->execute(['team_id' => $teamId]);
     $teamData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Group matches by competition only
+
+   //grouping  the matches by competion 
+   
     foreach ($matchesData as $row) {
-        $competition = $row['competition'] ?? '';
+        $competition = htmlspecialchars($row['competition'] ?? '', ENT_QUOTES, 'UTF-8');
+
         if (!isset($groupedMatches[$competition])) {
             $groupedMatches[$competition] = [];
         }
+
         $groupedMatches[$competition][] = [
             'id' => $row['match_id'],
             'competition' => ['name' => $competition],
-            'homeTeam' => ['name' => $row['home_team']],
+            'homeTeam' => ['name' => htmlspecialchars($row['home_team'], ENT_QUOTES, 'UTF-8')],
             'homeTeamCrest' => $row['home_team_crest'],
-            'awayTeam' => ['name' => $row['away_team']],
+            'awayTeam' => ['name' => htmlspecialchars($row['away_team'], ENT_QUOTES, 'UTF-8')],
             'awayTeamCrest' => $row['away_team_crest'],
             'score' => [
                 'fullTime' => [
@@ -120,13 +175,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clubNameSearch'])) {
                     'away' => (int)$row['away_score']
                 ]
             ],
-            'minute' => htmlspecialchars_decode($row['minute'] ?? '-'),
+            'minute' => htmlspecialchars($row['minute'] ?? '-', ENT_QUOTES, 'UTF-8'),
             'utcDate' => $row['kickoff']
         ];
     }
 }
 
-// Render page
+
+
+// Render Twig template
+
 echo $twig->render('teamSearch.html.twig', [
     'groupedMatches' => $groupedMatches,
     'user' => $user,
@@ -138,5 +196,6 @@ echo $twig->render('teamSearch.html.twig', [
 ]);
 
 
-//Close PDO connection
+// Close PDO connection
+
 $pdo = null;

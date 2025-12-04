@@ -1,18 +1,17 @@
 <?php
-require_once 'dbConnections/security.php' ;
-require_once 'vendor/autoload.php';
-require_once 'dbConnections/almanacDatabaseConnection.php';
+//require files
+require_once 'dbConnections/security.php'; // Used to load the database connection
+require_once 'vendor/autoload.php'; //Loads Composer autoload needed for Twig and other libraries
+require_once 'dbConnections/almanacDatabaseConnection.php';// Used to load the database connection
 
-session_start();
+session_start(); // Start new or resume existing session
 
-
-// Twig Setup
-$loader = new \Twig\Loader\FilesystemLoader('templates');
+// Twig setup
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates'); //Twig will load .twig files from the templates/ folder
 $twig = new \Twig\Environment($loader, [
-    'cache' => false,
-    'autoescape' => 'html', // can be 'html', 'js', 'css', 'url', false
+    'cache' => false, //Twig will not cache templates
+    'autoescape' => 'html', // Automatically escapes output to prevent XSS attacks.
 ]);
-
 //set user if logged in 
 $user =  $_SESSION['user'] ?? null;
 
@@ -22,6 +21,7 @@ $selectedLeague = trim($_GET['league'] ?? '');
 
 
 // Handle Refresh Button POST
+//When the refresh button is pressed
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh'])) {
     include 'livescoreAPI.php'; // Update matches from API
 
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh'])) {
     if ($selectedLeague !== '') {
         $url .= "?league=" . urlencode($selectedLeague);
     }
+    // Redirect and stop script execution
     header("Location: $url");
     exit;
 }
@@ -37,19 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refresh'])) {
 
 // Load all leagues for dropdown
 $leagues = [];
+// Uses DISTINCT so each competition appears only once
 $stmt = $pdo->query("SELECT DISTINCT competition FROM livematches ORDER BY competition ASC");
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $leagues[] = $row['competition']; // Keep raw data; Twig will escape output
 }
 
-// Optional: Validate GET league exists in DB
-if ($selectedLeague !== '' && !in_array($selectedLeague, $leagues)) {
+// Validate GET league If ?league does not match any known league reset
+if (!empty($selectedLeague) && !in_array($selectedLeague, $leagues)) {
     $selectedLeague = '';
 }
 
-// Fetch matches
-if ($selectedLeague !== '') {
-    // Filter matches by selected league
+// Fetch Matches From Database
+if (!empty($selectedLeague)) {
+    // If a league is selected filter matches by selected league
     $stmt = $pdo->prepare(" SELECT match_id, competition, country, home_team, away_team,home_team_crest, 
         away_team_crest, home_score, away_score, minute, kickoff
         FROM livematches
@@ -59,7 +61,7 @@ if ($selectedLeague !== '') {
     ");
     $stmt->execute(['competition' => $selectedLeague]);
 } else {
-    // Fetch all leagues
+    // If not fetch all leagues
     $stmt = $pdo->query(" SELECT match_id, competition, country, home_team, away_team, home_team_crest,
         away_team_crest, home_score, away_score, minute, kickoff
         FROM livematches
@@ -71,37 +73,43 @@ if ($selectedLeague !== '') {
 $matchesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// Group matches by country & competition
+//  Group Matches by Country then by Competition
+// groupedMatches[country][competition][]
+
 $groupedMatches = [];
 
-foreach ($matchesData as $row) {
-    $country = $row['country'];
-    $competition = $row['competition'];
+if (!empty($matchesData) && is_array($matchesData)) {
+    foreach ($matchesData as $row) {
+        $country = $row['country'];
+        $competition = $row['competition'];
+        
+         // Initialise group structure 
+        if (!isset($groupedMatches[$country])) $groupedMatches[$country] = [];
+        if (!isset($groupedMatches[$country][$competition])) $groupedMatches[$country][$competition] = [];
 
-    if (!isset($groupedMatches[$country])) $groupedMatches[$country] = [];
-    if (!isset($groupedMatches[$country][$competition])) $groupedMatches[$country][$competition] = [];
-
-    $groupedMatches[$country][$competition][] = [
-        'id' => (int)$row['match_id'],
-        'competition' => ['name' => $competition],
-        'area' => ['name' => $country],
-        'homeTeam' => ['name' => $row['home_team']],
-        'awayTeam' => ['name' => $row['away_team']],
-        'homeTeamCrest' => ['crest' => $row['home_team_crest']],
-        'awayTeamCrest' => ['crest' => $row['away_team_crest']],
-        'score' => [
-            'fullTime' => [
-                'home' => (int)$row['home_score'],
-                'away' => (int)$row['away_score'],
-            ]
-        ],
-        'minute' => $row['minute'],
-        'utcDate' => $row['kickoff'],
-    ];
+        // Build the match structure for the Twig template
+        $groupedMatches[$country][$competition][] = [
+            'id' => (int)$row['match_id'],
+            'competition' => ['name' => $competition],
+            'area' => ['name' => $country],
+            'homeTeam' => ['name' => $row['home_team']],
+            'awayTeam' => ['name' => $row['away_team']],
+            'homeTeamCrest' => ['crest' => $row['home_team_crest']],
+            'awayTeamCrest' => ['crest' => $row['away_team_crest']],
+            'score' => [
+                'fullTime' => [
+                    'home' => (int)$row['home_score'],
+                    'away' => (int)$row['away_score'],
+                ]
+            ],
+            'minute' => $row['minute'],
+            'utcDate' => $row['kickoff'],
+        ];
+    }
 }
 
 // Render Twig template
-echo $twig->render('liveScore.html.twig', [
+echo $twig->render('/liveScore.html.twig', [
     'groupedMatches' => $groupedMatches,
     'leagues' => $leagues,
     'selectedLeague' => $selectedLeague,
