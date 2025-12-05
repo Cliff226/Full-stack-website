@@ -21,9 +21,8 @@
               <button type="button" id='loginShowPasswordButton' class="loginButtons toggle-password-btn" data-target="inputPassword">
               Show Password
               </button>
-              {# CAPTCHA Image and Input #}
-              <img src="/captcha.php" alt="CAPTCHA Image">
-              <input type="text" class="form-control mt-2" name="captcha_input" placeholder="Enter CAPTCHA" required>
+               {# CAPTCHA #}
+              <div class="g-recaptcha " data-sitekey="{{ site_key }}"  data-theme="dark"></div>
               {# Login button #}
               <button class="loginButtons mt-3" type="submit">Login</button>
             </div>
@@ -43,20 +42,26 @@
         </form>
       </div>
     </main>
-    <footer class = "footer mt-4">
-      <p>Copyright © 2025</p>
+    {# Footer Section #}
+    <footer class = "footer">
+    <p>Copyright © 2025</p>
     </footer>
+      {# Include modal for registration#}
+    {% include 'modal.html.twig' %}
 
-        {% include 'modal.html.twig' %}
-
-        {# Scripts #}
-        <script>
-            window.status = '{{ status|default('')|e('js') }}';
-            window.username = '{{ username|default('')|e('js') }}';
-            window.context = '{{ context|default('')|e('js') }}';
-        </script>
-        <script src="public/js/modal.js"></script>
-        <script src="public/js/login.js"></script>
-        {% include 'searchScript.html.twig' %}
-    </body>
+    {# Scripts #}
+    <script>
+    {# Pass variables to JS for modal handlin #}
+        window.status = '{{ status|default('')|e('js') }}';
+        window.username = '{{ username|default('')|e('js') }}';
+        window.context = '{{ context|default('')|e('js') }}';
+    </script>
+    {# JS scripts for modals and form #}
+    <script src="js/modal.js"></script>
+    <script src="js/register.js"></script>
+    {# for captcha #}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {# Include search script template #}
+    {% include 'searchScript.html.twig' %}
+  </body>
 </html>

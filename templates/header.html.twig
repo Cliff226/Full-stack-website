@@ -1,14 +1,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create Post - GoalRush</title>
-    
+        <meta name="description" content="GoalRush - Create and manage your goals">
+        <title>{% block title %}GoalRush{% endblock %}</title>
 
-        {# Local CSS #}
-        <link rel="stylesheet" href="/public/bootstrap.min.css">
-        <link rel="stylesheet" href="/public/style.css">
-
+        {# Stylesheets #}
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        
         {# Local JS #}
-        <script src="/public/bootstrap.bundle.min.js"></script>
-        <script src="/public/autosize.min.js"></script>
-        </head>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/autosize.min.js"></script>
+
+        {# External Scripts #}
+        <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+    </head>
+
+
