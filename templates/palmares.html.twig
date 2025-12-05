@@ -9,36 +9,39 @@
                 {{ include('navigation.html.twig') }}
             </nav>
         </header>
-
+        {# Main content section #}
         <main class="main"> 
-            {# League selection dropdown #}
+            {# Page title and description #}
             <div class="pageTitle" id="palmaresContainer">
                 <h1 class="mt-4">Club Palmares</h1>
                 <p>Select a league and club to view their trophy achievements.</p>
             </div>
-
+            {# League & Club selection dropdowns #}
             <div class="undertilteButtons contaner" mt-5>
                 <div class="tilteButtons">
+                    {# League selection dropdown with GET method #}
                     <form class="leagueSelect" action="" method="get">
                         <select name="League_select" class="form-select" onchange="this.form.submit()">
                             <option value="">Select League</option>
-                            {% for key, val in stored_leagues %}
-                                <option value="{{ key|e }}" {% if league_select == key %}selected{% endif %}>
-                                    {{ league_names[key]|e }} {# ESCAPE for HTML text #}
+                            {# List all leagues in database #}
+                            {% for key, league in leagues %}
+                                <option value="{{ key }}" {{ league_select == key ? 'selected' }}>
+                                    {{ league.name }} {# Display the selected league  #}
                                 </option>
                             {% endfor %}
                         </select>
                     </form>
 
-                    {# Club selection dropdown #}
+                    {# Club selection dropdown for teams of the selectes league #}
                     {% if clubs_list %}
-                        <form class="clubSelect" method="GET">
-                            <input type="hidden" name="League_select" value="{{ league_select|e }}">
+                        <form class="clubSelect" method="get">
+                            <input type="hidden" name="League_select" value="{{ league_select }}">
                             <select name="club_id" class="form-select" onchange="this.form.submit()">
                                 <option value="">Select Club</option>
+                                {# list all clus in that league #}
                                 {% for club in clubs_list %}
-                                    <option value="{{ club.id|e }}" {% if selected_club and selected_club.id == club.id %}selected{% endif %}>
-                                        {{ club.name|e }}
+                                    <option value="{{ club.id }}" {{ selected_club and selected_club.id == club.id ? 'selected' }}>
+                                        {{ club.name }} {# Display selected club #}
                                     </option>
                                 {% endfor %}
                             </select>
@@ -46,16 +49,17 @@
                     {% endif %}
                 </div>    
             </div>
-
-            {# Club card #}
+           {# Selected Club Card #}
             <div class="row g-0 mb-3">
                 <div class="col-12">
+                    {# display club logo #}
                     {% if selected_club %}
                         <div id='club-card' class='club-card'
                             style='background: linear-gradient(60deg, {{ selected_club.primary_color|e('html_attr') }}, {{ selected_club.secondary_color|e('html_attr') }});'>
                             {% if selected_club.logo %}
                                 <img class='club-logo' src='data:image/png;base64,{{ selected_club.logo|e('html_attr') }}' alt='{{ selected_club.name|e }} Logo'>
                             {% endif %}
+                            {# Club info #}
                             <div>
                                 <h2 class='clubName-text'>{{ selected_club.name|e }}</h2>
                                 <p>
@@ -69,7 +73,7 @@
                 </div>
             </div>
 
-            {# Trophies table #}
+            {# Club Trophy Table #}
             {% if selected_club %}
                 <div class="tableContainer">
                     {% if trophies_list %}
@@ -83,7 +87,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for trophy in trophies_list %}
+                            {# Loop through each trophy and display #}
+                                {% for trophy in trophies_list  %}
                                     <tr>
                                         <td>{{ trophy.trophy_name|e }}</td>  {# ESCAPE for table content #}
                                         <td>{{ trophy.trophy_type|e }}</td>
@@ -94,13 +99,19 @@
                             </tbody>
                         </table>
                     {% endif %}
+                    {% if trophies_list is empty %}
+                        <div class= 'empty'>
+                            <p>This club hasn't won any trophies yet.</p>
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </main>
-
+        {# Footer section #}
         <footer class="footer mt-4">
             <p>Copyright © 2025</p>
         </footer>
+        {# Include search script template #}
         {% include 'searchScript.html.twig' %}
     </body>
 </html>

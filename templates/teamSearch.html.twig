@@ -9,13 +9,14 @@
                 {{ include('navigation.html.twig') }}
             </nav>
         </header>
-
+        {# Main section #}
         <main class="main">
+            {# Page title and description for the searched team #}
             <div class="pageTitle" id="SearchedTeamContainer">
                 <h1 class="mt-4">Search Result for {{ teamData.team_name|e }}</h1>
                 <p>Here is the information for the team you searched for, including season matches and league standings.</p>
             </div>
-
+            {# Team Information Section #}
             <section id="searchedTeamInfo">
                 <h2><img src="{{ teamData.crest|e('html_attr') }}" width="50" alt="logo"> {{ teamData.team_name|e }}</h2>            
                 <p>
@@ -25,8 +26,10 @@
                     and a goal difference of <strong>{{ teamData.goal_diff|e }}</strong>.
                 </p>
             </section>
-
+            {# Matches Section for the Team #}
             <div id="LiveScoresMatches"> 
+
+                {# Loop through each match in this competition #}
                 {% for comp, matches in groupedMatches %}
                     <div class="tableContainer">
                         <h4 class="mt-3">{{ comp }}</h4>
@@ -34,11 +37,11 @@
                         <table class="table table-striped table-dark table-hover mt-2">
                             <thead>
                                 <tr>
-                                    <th>Home</th>
-                                    <th>Away</th>
-                                    <th>Score</th>
-                                    <th>Minute</th>
-                                    <th>Kickoff</th>
+                                    <th>Home</th>       {#Home team #}
+                                    <th>Away</th>       {#Away team #}
+                                    <th>Score</th>      {#Score#}
+                                    <th>Minute</th>     {#Game time #}
+                                    <th>Kickoff</th>    {#Kick off time#}
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,7 +61,7 @@
                     <br>
                 {% endfor %}
             </div>
-
+            {# League Standings Table #}
             <div id="standingsContainer" class = "tableContainer">
                 <h2 class="mt-4">
                     Standings - {{ leagueName|e }}
@@ -66,40 +69,48 @@
                 </h2>
 
                 <table class="table table-striped table-dark table-hover mt-4">
-                    <tr>
-                        <th>#</th>
-                        <th>Team</th>
-                        <th>P</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>Pts</th>
-                        <th>GF</th>
-                        <th>GA</th>
-                        <th>GD</th>
-                    </tr>
-
-                    {% for team in standings %}
-                    <tr>
-                        <td>{{ team.position|e }}</td>
-                        <td><img class="scoreteamCrest" src="{{ team.crest|e('html_attr') }}" alt="logo"> {{ team.team_name|e }}</td>
-                        <td>{{ team.played|e }}</td>
-                        <td>{{ team.won|e }}</td>
-                        <td>{{ team.draw_matches|e }}</td>
-                        <td>{{ team.lost|e }}</td>
-                        <td>{{ team.points|e }}</td>
-                        <td>{{ team.goals_for|e }}</td>
-                        <td>{{ team.goals_against|e }}</td>
-                        <td>{{ team.goal_diff|e }}</td>
-                    </tr>
-                    {% endfor %}
+                    <thead>
+                        <tr>
+                            <th>#</th>         {# Position #}
+                            <th>Team</th>      {# Team name with crest #}
+                            <th>P</th>         {# Played #}
+                            <th>W</th>         {# won #}
+                            <th>D</th>         {# Draws #}
+                            <th>L</th>         {# lose4s #}
+                            <th>GF</th>        {# Goals scored #}
+                            <th>GA</th>        {# Goals consided #}
+                            <th>GD</th>        {# Goal difference #}
+                            <th>Pts</th>       {# Points #}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# Loop through all teams in the standings array #}
+                        {% for team in standings %}
+                            <tr>
+                                <td>{{ team.position|e }}</td>
+                                <td>
+                                    <img class="scoreteamCrest" src="{{ team.crest|e('html_attr') }}" alt="logo">
+                                    {{ team.team_name|e }}
+                                </td>
+                                <td>{{ team.played|e }}</td>
+                                <td>{{ team.won|e }}</td>
+                                <td>{{ team.draw_matches|e }}</td>
+                                <td>{{ team.lost|e }}</td>
+                                <td>{{ team.goals_for|e }}</td>
+                                <td>{{ team.goals_against|e }}</td>
+                                <td>{{ team.goal_diff|e }}</td>
+                                <td>{{ team.points|e }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </main>
-
+        {# Footer Section #}
         <footer class="footer mt-4">
             <p>Copyright © 2025</p>
         </footer>
+        {# Include additional search scripts #}
         {% include 'searchScript.html.twig' %}
     </body>
 </html>

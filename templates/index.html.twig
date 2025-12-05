@@ -16,7 +16,7 @@
                     <p>
                         Your ultimate destination for live football scores and news.
                         {% if userData is defined and userData.favorite_league %}
-                            Stay up to date with the latest from your favorite league: {{ userData.favorite_league|upper }}!
+                            Stay up to date with the latest from your favorite league: {{ userData.favorite_league|upper }}
                         {% else %}
                             Discover scores, news, and updates from all leagues worldwide.
                         {% endif %}
@@ -30,13 +30,13 @@
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <a class ="link-section-ancor" href="/liveScore.php">
-                                    <img class=" d-block link-section-img" src="public/images/kick.jpg" alt="kick image">
+                                    <img class=" d-block link-section-img" src="images/kick.jpg" alt="kick image">
                                     <h3>Live Scores</h3>
                                 </a>
                             </div>
                             <div class="carousel-item">
                                 <a class ="link-section-ancor" href="/blog.php">
-                                    <img class="link-section-img" src="public/images/championsball.jpg" alt="ball image">
+                                    <img class="link-section-img" src="images/championsball.jpg" alt="ball image">
                                     <h3>Blog</h3>
                                 </a>
                             </div>
@@ -44,13 +44,13 @@
                                 {# if user is logged in the carusel item will give a link to the users profle  #}
                                 {% if user %}
                                     <a class ="link-section-ancor" href="/profile.php">
-                                        <img class="link-section-img" src="public/images/stadium.jpg" alt="net image">
+                                        <img class="link-section-img" src="images/stadium.jpg" alt="net image">
                                         <h3>Your profile</h3>
                                     </a>
                                 {# if user is not logged in the corusel item will be a link to the login page #}
                                 {% else %}
                                     <a class ="link-section-ancor" href="/login.php">
-                                        <img class="link-section-img" src="public/images/stadium.jpg" alt="net image">
+                                        <img class="link-section-img" src="images/stadium.jpg" alt="net image">
                                         <h3>Login</h3>
                                     </a>
                                 {% endif %}
